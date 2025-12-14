@@ -59,13 +59,41 @@
             <div th:replace="~{modules/widgets/nav-menu :: nav-menu-recursion(menuItem=${menuItem})}"></div>
             
             <style type="text/css">
+                /* 1. 给父元素.menus_item设置flex布局，让子元素<a>整体居中 */
+                .menus_item {
+                    /* 建议设置明确的高度（根据你的导航栏需求调整，比如40px/50px） */
+                    height: 48px; 
+                    /* 开启flex，让内部的<a>标签上下左右居中 */
+                    display: flex;
+                    justify-content: center; /* 水平居中 */
+                    align-items: center; /* 垂直居中 */
+                    /* 可选：清除默认的内外边距，避免干扰 */
+                    margin: 0;
+                    padding: 0 0.4rem; /* 保留你原来的内边距 */
+                }
+
+                /* 2. 给<a>标签设置样式，让内部的图标和文字居中，且占满可用空间 */
+                .site-page {
+                    /* 转为块级flex元素，控制内部元素对齐 */
+                    display: flex;
+                    align-items: center; /* 让图标和文字垂直居中（关键） */
+                    justify-content: center; /* 让图标和文字整体水平居中 */
+                    gap: 0.3em; /* 可选：图标和文字之间加间距，视觉更美观 */
+                    /* 可选：继承父元素高度，确保垂直居中的基准 */
+                    height: 100%;
+                    /* 清除a标签的默认下划线（可选，根据你的样式需求） */
+                    text-decoration: none;
+                    color: inherit; /* 继承父元素颜色 */
+                }
+
+                /* 3. 你的原有图标样式，保留并微调 */
                 .ali_icon {
                     width: 1.2em;
                     height: 1.2em;
                     vertical-align: -0.15em;
                     fill: currentColor;
                     overflow: hidden;
-                    right: 0;
+                    /* right: 0; 这个属性对行内元素无效，删除（否则无意义） */
                 }
             </style>
         </div>
