@@ -2189,8 +2189,7 @@ spec:
       formSchema:
         - $formkit: attachment
           name: aboutAuthorImage
-          label: 图片
-          value: https://liuzhihang.com/upload/recommend.png
+          label: LOGO
         - $formkit: select
           name: widget_list
           multiple: true
