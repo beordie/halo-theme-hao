@@ -1538,6 +1538,7 @@ blockquote footer cite::before {
 
 #recent-posts > .recent-post-item:hover {
     box-shadow: var(--card-hover-box-shadow);
+    transform: translateY(-5px);
 }
 
 #recent-posts > .recent-post-item:hover img.post_bg {
@@ -4595,7 +4596,7 @@ html {
 
 #nav .menus_items .menus_item .menus_item_child {
     padding: 6px 4px 8px 4px;
-    border-radius: 100px;
+    border-radius: 10px;
     background-color: var(--heo-card-bg);
     box-shadow: var(--heo-shadow-black);
     border: var(--style-border);
@@ -5110,7 +5111,7 @@ html {
     height: 25px;
     border-radius: 40px;
     background: var(--heo-fontcolor);
-    color: var(--card-bg);
+    color: var(--heo-card-bg);
     position: absolute;
     top: 5px;
     right: 5px;
@@ -5513,7 +5514,7 @@ html {
         opacity: 1;
         transition: 0.3s;
         line-height: 1;
-        border-radius: 100px;
+        border-radius: 10px;
         min-width: 100px;
     }
 
@@ -6245,7 +6246,7 @@ img.footer_mini_logo:hover {
     padding-bottom: 0;
     height: 35px;
     line-height: 35px;
-    border-radius: 40px;
+    border-radius: 5px;
 }
 
 .page #menus > div.menus_items > .menus_item:hover > a {
@@ -6256,7 +6257,7 @@ img.footer_mini_logo:hover {
     letter-spacing: 0rem;
     display: flex;
     align-items: center;
-    border-radius: 100px;
+    border-radius: 10px;
     padding: 0.2rem 0.5rem;
     width: 100%;
     color: var(--heo-fontcolor) !important;
@@ -6425,7 +6426,7 @@ a.console_switchbutton {
 /* 导航栏图标阴影 */
 #nav .site-page {
     text-shadow: 0.05rem 0.05rem 0.1rem rgba(0, 0, 0, 0);
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
 #nav .site-page {
@@ -9147,12 +9148,14 @@ ins.adsbygoogle {
 #recent-posts .recent-post-item:hover {
     border: var(--style-border-hover);
     box-shadow: var(--heo-shadow-main);
+    transform: translateY(-5px);
 }
 
 @media screen and (max-width: 768px) {
     #recent-posts .recent-post-item:hover {
         border: var(--style-border-always);
-        box-shadow: none
+        box-shadow: none;
+        transform: none;
     }
 }
 
@@ -17739,7 +17742,7 @@ code:not([class]) {
 
 #nav .menus_items .menus_item .menus_item_child {
     padding: 2px 2px 4px 2px;
-    border-radius: 1.5rem;
+    border-radius: 0.5rem;
 }
 
 #nav .menus_items .menus_item .menus_item_child > .recursion_menus_item:hover > a {

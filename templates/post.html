@@ -9,7 +9,10 @@
                 _type = 'article')}"></th:block>
 </th:block>
 <th:block th:fragment="content">
-    <div class="post" id="body-wrap">
+    <div class="post grid-bg" id="body-wrap">
+        <!-- 扫描线和噪点效果 -->
+        <div class="scanlines fixed inset-0 z-50"></div>
+        <div class="noise fixed inset-0 z-50"></div>
 
         <header class="post-bg" id="page-header">
             <nav th:replace="~{modules/nav :: nav(title = ${post.spec.title})}"></nav>
@@ -152,7 +155,6 @@
         </header>
         <main class="layout" id="content-inner" th:classappend="${theme.config.sidebar.location}">
             <div id="post">
-
 
                 <!-- 文章ai摘要 -->
                 <div class="post-ai" th:if="${not #strings.isEmpty(#annotations.get(post, 'ai')) ?

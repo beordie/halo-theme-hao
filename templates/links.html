@@ -9,7 +9,10 @@
                 _type = 'website')}"></th:block>
 </th:block>
 <th:block th:fragment="content">
-    <div class="page" id="body-wrap">
+    <div class="page grid-bg" id="body-wrap">
+        <!-- 扫描线和噪点效果 -->
+        <div class="scanlines fixed inset-0 z-50"></div>
+        <div class="noise fixed inset-0 z-50"></div>
         <header class="not-top-img" id="page-header">
             <nav th:replace="~{modules/nav :: nav(title = '友链')}"></nav>
             <link rel="stylesheet" type="text/css" th:href="${assets_link + '/libs/fcircle/heo-fcircle3.css'}">

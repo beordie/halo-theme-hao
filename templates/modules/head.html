@@ -19,6 +19,25 @@
 
     <link rel="stylesheet" th:href="${assets_link + '/zhheo/commentBarrage.css'}">
 
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="${assets_link + '/css/cyberpunk-styles.css' + theme_version}">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        pixel: ['VT323', 'monospace']
+                    },
+                    colors: {
+                        'neon-blue': '#00f0ff',
+                        'neon-pink': '#ff2a6d',
+                        'neon-purple': '#d300c5',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style th:if="${theme.config.other.scrollbarLinearGradientEnable}">
         *::-webkit-scrollbar-thumb {
             background-color: var(--heo-main);
@@ -26,6 +45,16 @@
             border-radius: 2em
         }
     </style>
+    <style>
+         /* 确保发布日期使用VT323像素字体 */
+          .post-meta-date.font-pixel {
+              font-family: 'VT323', monospace !important;
+          }
+         /* Neon blue text effect */
+         .text-neon-blue {
+             color: #00f0ff !important;
+         }
+      </style>
 
     <!-- swiper 在瞬间滚动时会使用 -->
     <link th:if="${theme.config.top.moment}" rel="stylesheet" th:href="${assets_link + '/libs/swiper/swiper-bundle.min.css'}"/>

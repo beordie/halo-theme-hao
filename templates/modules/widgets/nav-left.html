@@ -18,9 +18,8 @@
                                 <a class="back-menu-item" rel="external nofollow"
                                    th:target="${childMenu.spec.target?.value}" th:href="@{${childMenu.status.href}}">
                                     <!-- icon 预留 -->
-                                    <img th:if="${!#strings.isEmpty(#annotations.getOrDefault(childMenu, 'icon', ''))}"
-                                         class="back-menu-item-icon"
-                                         th:src="${#annotations.getOrDefault(childMenu, 'icon', '')}">
+                                    <i th:if="${!#strings.isEmpty(#annotations.getOrDefault(childMenu, 'icon', ''))}"
+                                       th:class="'back-menu-item-icon ' + ${#annotations.getOrDefault(childMenu, 'icon', '')}"></i>
                                     <span class="back-menu-item-text" th:text="${childMenu.status.displayName}"></span>
                                 </a>
                             </th:block>
@@ -34,6 +33,7 @@
     <!-- 返回主页 -->
     <!-- 这里可以指定使用什么作为图标，默认使用站点名称 -->
     <a href="/" id="site-name" title="返回博客主页">
-        <span th:utext="${#strings.isEmpty(theme.config.basics.siteTitle)} ? ${site.title} : ${theme.config.basics.siteTitle}"></span>
+        <span class="glitch-effect neon-text-blue" data-text="${#strings.isEmpty(theme.config.basics.siteTitle)} ? ${site.title} : ${theme.config.basics.siteTitle}" 
+        th:utext="${#strings.isEmpty(theme.config.basics.siteTitle)} ? ${site.title} : ${theme.config.basics.siteTitle}"></span>
     </a>
 </div>
