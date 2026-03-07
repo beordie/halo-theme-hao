@@ -19,10 +19,11 @@
             <!-- 第一屏 -->
             <th:block th:replace="~{modules/header/index-img}"/>
         </header>
-        <div class="grid-bg">
-            <!-- 扫描线和噪点效果 -->
-            <div class="scanlines fixed inset-0 z-50"></div>
-            <div class="noise fixed inset-0 z-50"></div>
+        <!-- 代码雨背景 -->
+        <canvas id="code-rain"></canvas>
+        
+        <!-- 页面主体内容 -->
+        <div class="page">
             <div id="home_top">
                 <!-- 每日说说 -->
                 <div th:replace="~{modules/moment}"/>
@@ -45,8 +46,70 @@
         <footer th:replace="~{modules/footer}"/>
     </div>
 
+    <!-- 代码雨核心功能 -->
+    <script>
+        // 代码雨核心功能
+        (function() {
+            // 获取画布元素
+            const canvas = document.getElementById('code-rain');
+            const ctx = canvas.getContext('2d');
+            
+            // 设置画布尺寸并监听窗口大小变化
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // 代码雨字符集（可自定义）
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヰヱヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const fontSize = 14; // 字符大小
+            let columns = canvas.width / fontSize; // 列数
+            
+            // 存储每列字符的Y轴位置
+            let drops = [];
+            function initDrops() {
+                drops = [];
+                columns = canvas.width / fontSize;
+                for (let i = 0; i < columns; i++) {
+                    drops[i] = Math.random() * -100; // 初始位置随机，避免同时开始
+                }
+            }
+            initDrops();
+            window.addEventListener('resize', initDrops);
+
+            // 绘制代码雨的核心函数
+            function drawCodeRain() {
+                // 半透明背景层，实现拖影效果（关键）
+                ctx.fillStyle = 'rgba(10, 10, 26, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // 设置字符样式
+                ctx.fillStyle = '#00ff9c'; // 字符颜色（青绿色）
+                ctx.font = `${fontSize}px Consolas, 'Courier New', monospace`;
+                
+                // 逐列绘制字符
+                for (let i = 0; i < drops.length; i++) {
+                    // 随机选择字符
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    // 绘制字符
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    // 当字符超出画布底部，随机重置位置
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    
+                    // 让字符向下移动
+                    drops[i]++;
+                }
+            }
+
+            // 启动动画（35ms刷新一次，可调整速度）
+            setInterval(drawCodeRain, 35);
+        })();
+    </script>
 </th:block>
-
-
 
 </html>

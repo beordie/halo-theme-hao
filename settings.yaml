@@ -647,6 +647,8 @@ spec:
                       label: 标签&归档&统计
                     - value: "adbox"
                       label: 广告区域
+                    - value: "timer"
+                      label: 计时器
                     - value: "custom_html"
                       label: 自定义
                 - $formkit: group
@@ -710,6 +712,8 @@ spec:
                       label: 标签&归档&统计
                     - value: "adbox"
                       label: 广告区域
+                    - value: "timer"
+                      label: 计时器
                     - value: "custom_html"
                       label: 自定义
                 - $formkit: group
@@ -771,6 +775,8 @@ spec:
                       label: 标签&归档&统计
                     - value: "adbox"
                       label: 广告区域
+                    - value: "timer"
+                      label: 计时器
                     - value: "custom_html"
                       label: 自定义
                 - $formkit: group
@@ -831,6 +837,8 @@ spec:
                       label: 标签&归档&统计
                     - value: "adbox"
                       label: 广告区域
+                    - value: "timer"
+                      label: 计时器
                     - value: "custom_html"
                       label: 自定义
                 - $formkit: group
@@ -892,6 +900,8 @@ spec:
                       label: 标签&归档&统计
                     - value: "adbox"
                       label: 广告区域
+                    - value: "timer"
+                      label: 计时器
                     - value: "custom_html"
                       label: 自定义
                 - $formkit: group

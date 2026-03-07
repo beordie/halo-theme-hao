@@ -1,0 +1,80 @@
+<div class="card-widget card-timer">
+    <div class="card-content">
+        <div class="item-headline">
+            <i class="haofont hao-icon-clock"></i>
+            <span>阅读计时</span>
+        </div>
+        <div class="timer-content">
+            <div id="reading-timer">00:00:00</div>
+            <div class="timer-desc">持续阅读时间</div>
+        </div>
+    </div>
+    
+    <script>
+        (function() {
+            const timerElement = document.getElementById('reading-timer');
+            if (!timerElement) return;
+            
+            const startTime = Date.now();
+            
+            function updateTimer() {
+                const now = Date.now();
+                const diff = Math.floor((now - startTime) / 1000);
+                
+                const hours = Math.floor(diff / 3600);
+                const minutes = Math.floor((diff % 3600) / 60);
+                const seconds = diff % 60;
+                
+                const format = (num) => num.toString().padStart(2, '0');
+                
+                timerElement.textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
+            }
+            
+            // 立即更新一次，然后每秒更新
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        })();
+    </script>
+
+    <style>
+        .card-timer .card-content {
+            padding: 1rem 1.2rem;
+        }
+        
+        .card-timer .item-headline {
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: var(--heo-fontcolor);
+            opacity: 0.8;
+        }
+        
+        .card-timer .timer-content {
+            text-align: center;
+            padding: 10px 0;
+        }
+        
+        .card-timer #reading-timer {
+            font-size: 2rem;
+            font-weight: bold;
+            font-family: 'Monaco', 'Consolas', monospace;
+            color: var(--heo-main);
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card-timer .timer-desc {
+            font-size: 12px;
+            margin-top: 4px;
+            color: var(--heo-fontcolor);
+            opacity: 0.6;
+        }
+        
+        [data-theme="dark"] .card-timer #reading-timer {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+    </style>
+</div>

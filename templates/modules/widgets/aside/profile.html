@@ -103,12 +103,15 @@
             }
 
             #aside-content .card-info img {
-                width: 28px;
-                right: 24px;
-                top: 20px;
+                width: 96px;
+                height: 96px;
+                right: auto;
+                left: 50%;
+                top: 40px;
                 border-radius: 500px;
                 transition: all 0.5s ease 0s;
                 position: absolute;
+                transform: translateX(-50%);
             }
 
             #aside-content .card-info .author-info__name {
@@ -117,13 +120,20 @@
             }
 
             #aside-content .card-info .author-info__name {
-                text-align: left;
+                text-align: center;
                 font-weight: bold;
                 color: var(--heo-white);
                 font-size: 28px;
                 line-height: 1.1;
-                margin-top: 0.8rem;
+                margin-top: 4.5rem;
                 margin-bottom: 0.4rem;
+                width: max-content;
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+            #aside-content .card-info .author-info__description {
+                margin-top: 0.8rem;
             }
         </style>
 
