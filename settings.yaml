@@ -2053,6 +2053,78 @@ spec:
         - $formkit: attachment
           name: aboutAuthorImage
           label: LOGO
+        - $formkit: text
+          name: authorTitle
+          label: 职业/头衔
+          placeholder: 请输入职业或头衔
+          help: 显示在关于页头像下方
+        - $formkit: array
+          name: socialLinks
+          label: 社交链接
+          value: [ ]
+          itemLabels:
+            - type: text
+              label: $value.name
+            - type: text
+              label: $value.url
+          children:
+            - $formkit: text
+              name: name
+              label: 名称
+              validation: required
+            - $formkit: url
+              name: url
+              label: 链接
+              validation: required
+            - $formkit: text
+              name: icon
+              label: 图标类名
+              help: RemixIcon 类名，例如 ri-github-fill
+        - $formkit: array
+          name: skills
+          label: 技能标签
+          value: [ ]
+          itemLabels:
+            - type: text
+              label: $value.name
+          children:
+            - $formkit: text
+              name: name
+              label: 名称
+              validation: required
+        - $formkit: array
+          name: careers
+          label: 工作经历
+          value: [ ]
+          itemLabels:
+            - type: text
+              label: $value.company
+            - type: text
+              label: $value.period
+          children:
+            - $formkit: text
+              name: period
+              label: 时间
+              placeholder: 例如：2021 - 至今
+              validation: required
+            - $formkit: text
+              name: position
+              label: 职位
+              placeholder: 例如：前端架构师
+              validation: required
+            - $formkit: text
+              name: company
+              label: 公司
+              placeholder: 例如：某头部互联网公司 · 北京
+              validation: required
+            - $formkit: attachment
+              name: logo
+              label: 公司Logo
+              help: 右上角六边形中显示的Logo图片
+            - $formkit: textarea
+              name: desc
+              label: 概述
+              placeholder: 职责概述（不建议写太长）
         - $formkit: select
           name: widget_list
           multiple: true
