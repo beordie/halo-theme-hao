@@ -13,8 +13,11 @@ VERSION=$(grep -E '^  version:' "$PROJECT_ROOT/theme.yaml" | awk '{print $2}' | 
 # 获取当前git commit的短哈希
 COMMIT=$(cd "$PROJECT_ROOT" && git rev-parse --short HEAD)
 
+# 获取当前时间戳
+TIMESTAMP=$(date +"%Y%m%d%H%M%S")
+
 # 定义输出zip文件名
-ZIP_FILENAME="halo-theme-${VERSION}-${COMMIT}.zip"
+ZIP_FILENAME="halo-theme-${VERSION}-${COMMIT}-${TIMESTAMP}.zip"
 
 # 定义临时目录
 TEMP_DIR=$(mktemp -d)

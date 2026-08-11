@@ -587,6 +587,7 @@ function initBlog() {
         heo.stopImgRightDrag(),
         heo.addPowerLinksInPostRightSide(),
         heo.qrcodeCreate(),
+        heo.initProfileCardActions(),
         //右下角 snackbar 弹窗
     GLOBAL_CONFIG.source.tool.switch && heo.hidecookie(),
         heo.onlyHome(),

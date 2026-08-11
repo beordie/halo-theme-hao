@@ -929,6 +929,13 @@ spec:
           value:
             profileStyle: default
             helloText: 🤖️ 数码科技爱好者, 🔍 分享与热心帮助, 🏠 智能家居小能手, 🔨 设计开发一条龙, 🤝 专修交互与设计, 🏃 脚踏实地行动派, 🧱 团队小组发动机, 💢 壮汉人狠话不多
+            profileIdentity: 后端工程 · AI 工具 · 系统设计
+            currentFocusText: 最近在写技术、工具和生活观察
+            currentFocusUrl: /archives
+            primaryButtonText: 看技术文章
+            primaryButtonUrl: /archives
+            secondaryButtonText: 关于我
+            secondaryButtonUrl: /about
           children:
             - $formkit: select
               name: profileStyle
@@ -968,6 +975,11 @@ spec:
               label: 卡片名称
               placeholder: 请填写个人卡片名称
               help: 不填写默认为站点名称
+            - $formkit: text
+              name: profileIdentity
+              label: 身份标签
+              placeholder: 后端工程 · AI 工具 · 系统设计
+              help: 默认样式下展示在名称下方，用于快速说明博客定位
             - $formkit: code
               name: profileDesc
               label: 描述信息
@@ -975,11 +987,41 @@ spec:
               height: 200px
               language: html
               help: 支持 HTML 语法
+            - $formkit: text
+              name: currentFocusText
+              label: 当前关注
+              placeholder: 最近在写技术、工具和生活观察
+              help: 默认样式下展示为推荐入口，不填写则隐藏
+            - $formkit: url
+              name: currentFocusUrl
+              label: 当前关注链接
+              placeholder: /archives
+              help: 当前关注的跳转链接，不填写则只展示文本
+            - $formkit: text
+              name: primaryButtonText
+              label: 主按钮文案
+              placeholder: 看技术文章
+              help: 默认样式主行动按钮文案
+            - $formkit: url
+              name: primaryButtonUrl
+              label: 主按钮链接
+              placeholder: /archives
+              help: 不填写时默认跳转 /about
+            - $formkit: text
+              name: secondaryButtonText
+              label: 次按钮文案
+              placeholder: 关于我
+              help: 默认样式次行动按钮文案，不填写则隐藏
+            - $formkit: url
+              name: secondaryButtonUrl
+              label: 次按钮链接
+              placeholder: /about
+              help: 默认样式次行动按钮链接
             - $formkit: array
               name: socialMedia
               label: 社交媒体
-              help: 此处社交媒体最多设置两个
-              max: 2
+              help: 默认样式支持链接、复制文本和二维码弹层；样式一建议最多设置两个
+              max: 5
               value: [ ]
               itemLabels:
                 - type: image
@@ -993,9 +1035,28 @@ spec:
                 - $formkit: text
                   name: name
                   label: 名称
+                - $formkit: select
+                  name: type
+                  label: 类型
+                  value: link
+                  options:
+                    - value: link
+                      label: 链接
+                    - value: copy
+                      label: 复制文本
+                    - value: qrcode
+                      label: 二维码
                 - $formkit: url
                   name: url
                   label: 链接
+                - $formkit: text
+                  name: copyText
+                  label: 复制内容
+                  placeholder: 邮箱、微信号或其他联系方式
+                - $formkit: attachment
+                  name: qrcode
+                  label: 二维码图片
+                  placeholder: 请输入二维码图片路径或地址
         - $formkit: group
           name: wechat
           label: 公众号

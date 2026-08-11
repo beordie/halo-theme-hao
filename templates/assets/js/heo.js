@@ -517,6 +517,59 @@ var heo = {
             lastSayHello = randomGreeting
     },
 
+    initProfileCardActions: function() {
+        const card = document.querySelector(".profile-card-default");
+        if (!card) return;
+
+        const qrcodeLayer = card.querySelector(".profile-card-default__qrcode");
+        const qrcodeImg = card.querySelector(".profile-card-default__qrcode-img");
+        const qrcodeTitle = card.querySelector(".profile-card-default__qrcode-title");
+        const qrcodeClose = card.querySelector(".profile-card-default__qrcode-close");
+
+        card.querySelectorAll(".profile-social-action").forEach(function(action) {
+            action.onclick = function() {
+                const copyText = action.dataset.copyText;
+                const qrcode = action.dataset.qrcode;
+
+                if (copyText) {
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(copyText);
+                    } else {
+                        const input = document.createElement("textarea");
+                        input.value = copyText;
+                        input.style.position = "fixed";
+                        input.style.opacity = "0";
+                        document.body.appendChild(input);
+                        input.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(input);
+                    }
+                    if (typeof btf !== "undefined" && btf.snackbarShow) {
+                        btf.snackbarShow("已复制：" + copyText);
+                    }
+                    return;
+                }
+
+                if (qrcode && qrcodeLayer && qrcodeImg) {
+                    qrcodeImg.src = qrcode;
+                    qrcodeTitle.textContent = action.dataset.qrcodeTitle || action.title || "";
+                    qrcodeLayer.hidden = false;
+                }
+            }
+        });
+
+        if (qrcodeClose && qrcodeLayer) {
+            qrcodeClose.onclick = function() {
+                qrcodeLayer.hidden = true;
+            }
+            qrcodeLayer.onclick = function(event) {
+                if (event.target === qrcodeLayer) {
+                    qrcodeLayer.hidden = true;
+                }
+            }
+        }
+    },
+
     //匿名评论
     addRandomCommentInfo: function () {
         // 从形容词数组中随机取一个值
