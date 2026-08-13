@@ -1,7 +1,7 @@
 <div id="bannerGroup">
     <!-- banners -->
     <div id="banners">
-        <div class="tags-group-all">
+        <div th:class="${#strings.isEmpty(theme.config.top.BannerLeft.bannersBackgroundRollStyle) ? 'tags-group-all' : theme.config.top.BannerLeft.bannersBackgroundRollStyle}">
             <!--  banners 使用默认值-->
             <div class="tags-group-wrapper"
                  th:if="${#strings.equals(theme.config.top.BannerLeft.bannersBackground, 'default')}">
@@ -9,12 +9,12 @@
                     <div class="tags-group-icon" style="background:#989bf8">
                         <img th:with=" img = ${assets_link + '/images/icons/AfterEffect.png'}"
                              th:src="${img}"
-                             title="AfterEffect">
+                             loading="lazy" alt="AfterEffect" title="AfterEffect">
                     </div>
                     <div class="tags-group-icon" style="background:#fff">
                         <img th:with=" img = ${assets_link + '/images/icons/Sketch.png'}"
                              th:src="${img}"
-                             title="Sketch">
+                             loading="lazy" alt="Sketch" title="Sketch">
                     </div>
                 </div>
                 <div class="tags-group-icon-pair">
@@ -180,17 +180,17 @@
                  th:if="${#strings.equals(theme.config.top.BannerLeft.bannersBackground, 'techStack')}"
                  th:with="techs = ${theme.config.top.BannerLeft.techStack}">
                 <th:block th:each="tech,iterStat : ${techs}">
-                    <div class="tags-group-icon-pair" th:if="${iterStat.odd}">
+                    <div class="tags-group-icon-pair" th:if="${iterStat.odd or iterStat.last}">
                         <div class="tags-group-icon" th:style="'background:' + ${techOdd.background}"
-                             th:with="techOdd = ${techs.get(iterStat.index - 1)}">
+                             th:with="techOdd = ${iterStat.odd ? techs.get(iterStat.index - 1) : tech}">
                             <img th:with=" img = @{${techOdd.url}}" th:src="${img}"
-                                 th:title="${techOdd.name}">
+                                 th:alt="${techOdd.name}" th:title="${techOdd.name}" loading="lazy">
                         </div>
                         
-                        <div class="tags-group-icon" th:style="'background:' + ${techEven.background}"
+                        <div class="tags-group-icon" th:if="${iterStat.odd}" th:style="'background:' + ${techEven.background}"
                              th:with="techEven = ${tech}">
                             <img th:with=" img = @{${techEven.url}}" th:src="${img}"
-                                 th:title="${techEven.name}">
+                                 th:alt="${techEven.name}" th:title="${techEven.name}" loading="lazy">
                         </div>
                     </div>
                 </th:block>

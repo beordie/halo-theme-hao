@@ -10,24 +10,31 @@
 </th:block>
 <th:block th:fragment="content">
     
-    <div class="page" id="body-wrap">
-        <div id="home-portal" class="home-portal" aria-hidden="true">
+    <div class="page" id="body-wrap"
+         th:classappend="${theme.config.top.homePortal == null or theme.config.top.homePortal.compactMobileTop ? ' home-compact-mobile' : ''}">
+        <div id="home-portal" class="home-portal" aria-hidden="true"
+             th:if="${theme.config.top.homePortal == null or theme.config.top.homePortal.enable}">
             <div class="home-portal__backdrop"></div>
             <div class="home-portal__ripple"></div>
             <div class="home-portal__wave"></div>
             <div class="home-portal__content">
                 <div class="home-portal__eyebrow" th:text="${site.title}">Halo</div>
-                <div class="home-portal__title">把问题写清楚，把答案留给时间。</div>
-                <div class="home-portal__subtitle">
+                <div class="home-portal__title"
+                     th:text="${#strings.isEmpty(theme.config.top.homePortal?.title) ? '把问题写清楚，把答案留给时间。' : theme.config.top.homePortal.title}">
+                    把问题写清楚，把答案留给时间。
+                </div>
+                <div class="home-portal__subtitle"
+                     th:text="${#strings.isEmpty(theme.config.top.homePortal?.subtitle) ? '后端工程 · AI 工具 · 系统设计 · 生活观察' : theme.config.top.homePortal.subtitle}">
                     后端工程 · AI 工具 · 系统设计 · 生活观察
                 </div>
                 <button id="home-portal-enter" class="home-portal__button" type="button">
-                    <span>进入博客</span>
+                    <span th:text="${#strings.isEmpty(theme.config.top.homePortal?.buttonText) ? '进入博客' : theme.config.top.homePortal.buttonText}">进入博客</span>
                 </button>
             </div>
-            <script>
+            <script th:inline="javascript">
                 (() => {
                     const portalKey = 'hao-home-portal-entered';
+                    const showOnceInSession = [[${theme.config.top.homePortal == null or theme.config.top.homePortal.showOnceInSession}]];
                     const portal = document.getElementById('home-portal');
                     const enter = document.getElementById('home-portal-enter');
                     if (!portal || !enter) return;
@@ -40,18 +47,22 @@
                     const enterHome = () => {
                         portal.classList.add('home-portal--launching');
                         portal.classList.add('home-portal--leaving');
-                        try {
-                            sessionStorage.setItem(portalKey, 'true');
-                        } catch (e) {}
+                        if (showOnceInSession) {
+                            try {
+                                sessionStorage.setItem(portalKey, 'true');
+                            } catch (e) {}
+                        }
                         setTimeout(closePortal, 1850);
                     };
 
-                    try {
-                        if (sessionStorage.getItem(portalKey) === 'true') {
-                            closePortal();
-                            return;
-                        }
-                    } catch (e) {}
+                    if (showOnceInSession) {
+                        try {
+                            if (sessionStorage.getItem(portalKey) === 'true') {
+                                closePortal();
+                                return;
+                            }
+                        } catch (e) {}
+                    }
 
                     portal.setAttribute('aria-hidden', 'false');
                     document.documentElement.classList.add('home-portal-visible');
@@ -60,12 +71,13 @@
             </script>
         </div>
         <!-- 头部导航栏 -->
-        <header th:class="${theme.config.top.above.enable_above ? 'full_page' : 'not-top-img'}" id="page-header">
+        <header th:class="${theme.config.top.above.enable_above and !(theme.config.top.homePortal == null or (theme.config.top.homePortal.enable and theme.config.top.homePortal.hideAboveWhenPortal)) ? 'full_page' : 'not-top-img'}" id="page-header">
             <nav th:replace="~{modules/nav :: nav(title = ${siteTitle})}"></nav>
             <!-- 问候语 -->
             <th:block th:replace="~{modules/header/greeting}"/>
             <!-- 第一屏 -->
-            <th:block th:replace="~{modules/header/index-img}"/>
+            <th:block th:if="${!(theme.config.top.homePortal == null or (theme.config.top.homePortal.enable and theme.config.top.homePortal.hideAboveWhenPortal))}"
+                      th:replace="~{modules/header/index-img}"/>
         </header>
         <!-- 页面主体内容 -->
         <div class="page">

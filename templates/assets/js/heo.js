@@ -290,7 +290,8 @@ var heo = {
     },
 
     //隐藏今日推荐
-    hideTodayCard: function() {
+    hideTodayCard: function(event) {
+        event && event.stopPropagation && event.stopPropagation();
         document.getElementById("topGroup") && document.getElementById("topGroup").classList.add("hideCard")
     },
 

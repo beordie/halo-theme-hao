@@ -30,9 +30,23 @@
         </div>
         <i class="bber-gotobb haofont hao-icon-circle-arrow-right" onclick="location.href='/moments'" title="查看全文"></i>
     </th:block>
-    <img th:if="${theme.config.top.climb.climbEnable && theme.config.top.recentTop} " class="climb"  id="climb"
-         th:src="${isLazyload ? '' : theme.config.top.climb.climbImg}"
-         onclick="halo.changeMarginLeft(this)"
-         th:data-lazy-src="${ isLazyload ? theme.config.top.climb.climbImg : ''}">
+    <button th:if="${theme.config.top.climb.climbEnable}" class="climb home-pet" id="climb"
+            type="button" title="摸摸我" aria-label="宠物挂件"
+            onclick="halo.changeMarginLeft(this)">
+        <span class="home-pet__tail"></span>
+        <span class="home-pet__body">
+            <span class="home-pet__ear home-pet__ear--left"></span>
+            <span class="home-pet__ear home-pet__ear--right"></span>
+            <span class="home-pet__face">
+                <span class="home-pet__eye home-pet__eye--left"></span>
+                <span class="home-pet__eye home-pet__eye--right"></span>
+                <span class="home-pet__nose"></span>
+                <span class="home-pet__whisker home-pet__whisker--left"></span>
+                <span class="home-pet__whisker home-pet__whisker--right"></span>
+            </span>
+            <span class="home-pet__paw home-pet__paw--left"></span>
+            <span class="home-pet__paw home-pet__paw--right"></span>
+        </span>
+    </button>
 
 </div>

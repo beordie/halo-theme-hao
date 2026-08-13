@@ -174,6 +174,53 @@ spec:
               aspectRatio: "16/9"
               value: https://imgapi.kouseki.cn/random?sort=mp
         - $formkit: group
+          name: homePortal
+          label: 首页入场页
+          value:
+            enable: true
+            title: 把问题写清楚，把答案留给时间。
+            subtitle: 后端工程 · AI 工具 · 系统设计 · 生活观察
+            buttonText: 进入博客
+            showOnceInSession: true
+            hideAboveWhenPortal: true
+            compactMobileTop: true
+          children:
+            - $formkit: switch
+              name: enable
+              id: homePortalEnable
+              key: homePortalEnable
+              label: 启用入场页
+              help: 开启后首次进入首页展示入场页
+            - $formkit: text
+              name: title
+              if: $get(homePortalEnable).value
+              label: 入场标题
+              placeholder: 把问题写清楚，把答案留给时间。
+            - $formkit: text
+              name: subtitle
+              if: $get(homePortalEnable).value
+              label: 入场副标题
+              placeholder: 后端工程 · AI 工具 · 系统设计 · 生活观察
+            - $formkit: text
+              name: buttonText
+              if: $get(homePortalEnable).value
+              label: 按钮文案
+              placeholder: 进入博客
+            - $formkit: switch
+              name: showOnceInSession
+              if: $get(homePortalEnable).value
+              label: 每个会话只展示一次
+              help: 关闭后每次打开首页都会展示入场页
+            - $formkit: switch
+              name: hideAboveWhenPortal
+              if: $get(homePortalEnable).value
+              label: 入场页开启时隐藏首页第一屏
+              help: 避免入场页和首页第一屏重复表达，让文章内容更早出现
+            - $formkit: switch
+              name: compactMobileTop
+              label: 移动端压缩顶部模块
+              help: 移动端降低说说和置顶区域高度，让文章更早露出
+        - $formkit: group
           name: global_background
           label: 全局背景设置
           help: 开启后设置全局背景图片/视频
@@ -221,20 +268,14 @@ spec:
         - $formkit: group
           name: climb
           label: 宠物挂件
-          help: 需要瞬间丶顶部 Banner显示
+          help: 显示在首页瞬间说说右侧的小挂件
           value:
-            climbEnable: false
-            climbImg: https://imgapi.yyds.pink/random?sort=animals
+            climbEnable: true
           children:
             - $formkit: switch
               name: climbEnable
               key: climbEnable
               id: climbEnable
-            - $formkit: url
-              name: climbImg
-              if: $get(climbEnable).value
-              label: 图片
-              help: 随机图地址：https://imgapi.yyds.pink/random?sort=animals
         - $formkit: switch
           name: recentTop
           id: recentTop
@@ -246,19 +287,19 @@ spec:
           label: Banner 左侧
           if: $get(recentTop).value
           value:
-            bannersBackgroundRollStyle: tags-group-all
+            bannersBackgroundRollStyle: diagonalMove
             bannersBackground: default
-            bannersTitleBig: <div class="banners-title-big">Halo Theme</div><div class="banners-title-big">Hao</div>
-            bannersTitleSmall: 更多信息请关注 GitHub
+            bannersTitleBig: <div class="banners-title-big">工程札记</div><div class="banners-title-big">与工具实践</div>
+            bannersTitleSmall: 沉淀后端工程、AI 工作流与系统设计里的可复用经验
             categoryGroup:
-              - title: "必看"
+              - title: "精选文章"
                 icon: "haofont hao-icon-book"
                 url: "/"
                 colorOneLight: "#358bff"
                 colorTwoLight: "#15c6ff"
                 colorOneDark: "#0653b8"
                 colorTwoDark: "#2fcbff"
-              - title: "热门"
+              - title: "实践案例"
                 icon: "haofont hao-icon-fire"
                 url: "/"
                 colorOneLight: "#ff6655"
@@ -277,6 +318,16 @@ spec:
                   value: default
                 - label: 个人技术栈
                   value: techStack
+            - $formkit: select
+              name: bannersBackgroundRollStyle
+              label: 背景滚动方式
+              options:
+                - label: 斜向滚动
+                  value: diagonalMove
+                - label: 纵向滚动
+                  value: tags-group-all
+                - label: 横向滚动
+                  value: nowrapMove
             - $formkit: array
               name: techStack
               if: $get(bannersBackground).value == 'techStack'
@@ -331,7 +382,7 @@ spec:
                   label: 标题
                   placeholder: 请输入内容
                   validation: required
-                  value: "必看精选"
+                  value: "精选文章"
                 - $formkit: text
                   name: icon
                   label: 图标
@@ -372,7 +423,7 @@ spec:
             todayRecommend: true
             todayRecommendContent:
               todayRecommendUrl: /
-              todayRecommendTitle: Halo-Theme-Hao
+              todayRecommendTitle: 最近在写什么
               todayRecommendCover: https://liuzhihang.com/upload/hao_dark.jpg
               todayRecommendxTitle: 今日推荐
             recommendPost: latest
@@ -407,7 +458,7 @@ spec:
                   name: todayRecommendTitle
                   label: 大标题
                   placeholder: 请输入标题
-                  value: Halo-Theme-Hao
+                  value: 最近在写什么
                 - $formkit: attachment
                   name: todayRecommendCover
                   label: 背景图

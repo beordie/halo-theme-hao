@@ -47,21 +47,26 @@
 
     <!-- 今日推荐 -->
     <div class="todayCard" id="todayCard" th:if="${theme.config.top.BannerRight.todayRecommend}"
-         th:attr="onclick='javascript:window.open(\''+ ${theme.config.top.BannerRight.todayRecommendContent.todayRecommendUrl} +'\')'">
+         th:with="todayRecommendContent = ${theme.config.top.BannerRight.todayRecommendContent},
+                  todayRecommendTitle = ${#strings.isEmpty(todayRecommendContent.todayRecommendTitle) ? '最近在写什么' : todayRecommendContent.todayRecommendTitle},
+                  todayRecommendTips = ${#strings.isEmpty(todayRecommendContent.todayRecommendxTitle) ? '今日推荐' : todayRecommendContent.todayRecommendxTitle},
+                  todayRecommendUrl = ${#strings.isEmpty(todayRecommendContent.todayRecommendUrl) ? '/' : todayRecommendContent.todayRecommendUrl},
+                  todayRecommendCover = ${#strings.isEmpty(todayRecommendContent.todayRecommendCover) ? postRandomImg + todayRecommendTitle : todayRecommendContent.todayRecommendCover}"
+         th:attr="onclick='javascript:window.open(\''+ ${todayRecommendUrl} +'\')'">
         <div class="todayCard-info">
             <div class="todayCard-tips"
-                 th:text="${theme.config.top.BannerRight.todayRecommendContent.todayRecommendxTitle}"></div>
+                 th:text="${todayRecommendTips}"></div>
             <div class="todayCard-title"
-                 th:text="${theme.config.top.BannerRight.todayRecommendContent.todayRecommendTitle}"></div>
+                 th:text="${todayRecommendTitle}"></div>
         </div>
         <div class="todayCard-cover"
-             th:style="'background:url('+ ${theme.config.top.BannerRight.todayRecommendContent.todayRecommendCover} +') no-repeat center/cover'">
+             th:style="|background-image: url('${todayRecommendCover}')|">
         </div>
         <div class="banner-button-group">
-            <a class="banner-button" onclick="window.event.cancelBubble=!0;heo.hideTodayCard()">
-                <i class="haofont hao-icon-circle-plus"></i>
-                <span class="banner-button-text">更多推荐</span>
-            </a>
+            <button class="banner-button" type="button" onclick="heo.hideTodayCard(event)">
+                <i class="haofont hao-icon-list-ul"></i>
+                <span class="banner-button-text">展开推荐</span>
+            </button>
         </div>
     </div>
 </div>
