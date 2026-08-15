@@ -15,45 +15,139 @@
             <nav th:replace="~{modules/nav :: nav(title = '文章归档')}"></nav>
         </header>
         <main class="layout" id="content-inner">
-            <!-- archive -->
             <div id="archive">
                 <div class="article-sort-title">文章<sup>[[${siteStatsFinder.getStats().post}]]</sup></div>
-                <div class="article-sort" th:each="archive : ${archives.items}"
-                     th:with='postRandomImg=${#strings.contains(theme.config.layout.postRandomImg,"?") ? theme.config.layout.postRandomImg+"&" : theme.config.layout.postRandomImg+"?"}'>
-                    <div class="article-sort-item year" th:text="${archive.year}"></div>
-                    <div class="article-sort" th:each="month : ${archive.months}">
-                        <!-- 月份没有样式所以不显示 -->
-                        <!-- <div class="article-sort-item" th:text="${month.month}"></div> -->
-                        <div class="article-sort-item" th:each="post : ${month.posts}">
-                            <a class="article-sort-item-img" th:href="@{${post.status.permalink}}"
-                               th:title="${post.spec.title}">
-                                <img th:alt="${post.spec.title}"
-                                     th:src="${#strings.isEmpty(post.spec.cover) ? postRandomImg+post.spec.title : thumbnail.gen(post.spec.cover, 's')}">
-                            </a>
-                            <div class="article-sort-item-info">
-                                <div class="article-sort-item-time"><i class="far fa-calendar-alt"></i>
-                                    <time class="post-meta-date-created"
-                                          th:attr="datetime=${#dates.format(post.spec.publishTime,'yyyy-MM-dd HH:mm:ss')}"
-                                          th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"
-                                          th:title="'创建于' + ${#dates.format(post.spec.publishTime,'yyyy-MM-dd HH:mm:ss')}">
-                                    </time>
+                <th:block th:each="archive : ${archives.items}"
+                          th:with='postRandomImg=${#strings.contains(theme.config.layout.postRandomImg,"?") ? theme.config.layout.postRandomImg+"&" : theme.config.layout.postRandomImg+"?"}'>
+                    <div class="archive-year">[[${archive.year}]]</div>
+                    <div class="archive-list">
+                        <th:block th:each="month : ${archive.months}">
+                            <div class="archive-month">
+                                <span class="archive-month__dot"></span>
+                                <span class="archive-month__label">[[${month.month}]] 月</span>
+                                <span class="archive-month__count">[[${month.posts.size()}]] 篇</span>
+                            </div>
+                            <div class="archive-item"
+                               th:each="post : ${month.posts}"
+                               th:with="days=${(new java.util.Date().getTime()-post.spec.publishTime.toEpochMilli())/86400000}"
+                               th:classappend="${post.spec.pinned} ? 'archive-item--pinned' : ''"
+                               th:attr="onclick='pjax.loadUrl(\''+ @{${post.status.permalink}} +'\')'"
+                               th:title="${post.spec.title}"
+                               data-href-pjax>
+                                <div class="archive-item__cover">
+                                    <img th:alt="${post.spec.title}"
+                                         th:data-lazy-src="${ isLazyload ? (#strings.isEmpty(post.spec.cover) ? postRandomImg+post.spec.title : thumbnail.gen(post.spec.cover, 'm')) : ''}"
+                                         th:src="${isLazyload ? '' : (#strings.isEmpty(post.spec.cover) ? postRandomImg+post.spec.title : thumbnail.gen(post.spec.cover, 'm'))}">
                                 </div>
-                                <a class="article-sort-item-title" onclick="window.event.cancelBubble=!0"
-                                   th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"
-                                   th:title="${post.spec.title}"></a>
-                                <div class="article-sort-item-tags">
-                                    <a class="article-meta__tags"
-                                       th:each="tag : ${post.tags}" th:href="@{${tag.status.permalink}}">
-                                        <span class="tags-punctuation">[[${tag.spec.displayName}]]</span>
-                                    </a>
-                                    <span class="article-meta__link">•</span>
+                                <div class="archive-item__body">
+                                    <div class="archive-item__top-tips">
+                                        <span class="archive-item__sticky" th:if="${post.spec.pinned}">
+                                            <i class="fa fa-bullhorn"></i> 置顶
+                                        </span>
+                                        <th:block th:if="${not #lists.isEmpty(post.categories)}">
+                                            <a class="archive-item__category"
+                                               th:each="category : ${post.categories}"
+                                               th:href="@{${category.status.permalink}}"
+                                               onclick="event.stopPropagation()"
+                                               th:title="${category.spec.displayName}"
+                                               th:text="${category.spec.displayName}"></a>
+                                        </th:block>
+                                        <a class="archive-item__unread"
+                                           th:href="@{${post.status.permalink}}"
+                                           th:title="${post.spec.title}"
+                                           onclick="event.stopPropagation()"
+                                           data-pjax-state="">未读</a>
+                                        <span class="archive-item__new" th:if="${days <= 7 && days >= 0}">NEW</span>
+                                    </div>
+                                    <a class="archive-item__title"
+                                       th:href="@{${post.status.permalink}}"
+                                       onclick="event.stopPropagation()"
+                                       th:text="${post.spec.title}"></a>
+                                    <div class="archive-item__excerpt" th:if="${not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}"></div>
+                                    <div class="archive-item__meta">
+                                        <span class="archive-item__tags" th:if="${not #lists.isEmpty(post.tags)}">
+                                            <a class="archive-item__tag"
+                                               th:each="tag : ${post.tags}"
+                                               th:href="@{${tag.status.permalink}}"
+                                               onclick="event.stopPropagation()"
+                                               th:title="${tag.spec.displayName}"
+                                               th:text="${tag.spec.displayName}"></a>
+                                        </span>
+                                        <span class="archive-item__date">
+                                            <i class="fa fa-clock-o"></i>
+                                            <time th:datetime="${post.spec.publishTime}"
+                                                  th:if="${days == 0}"
+                                                  th:title="'创建于 ' + ${#dates.format(post.spec.publishTime,'yyyy-MM-dd HH:mm:ss')}">今天</time>
+                                            <time th:datetime="${post.spec.publishTime}"
+                                                  th:if="${days == 1}"
+                                                  th:title="'创建于 ' + ${#dates.format(post.spec.publishTime,'yyyy-MM-dd HH:mm:ss')}">昨天</time>
+                                            <time th:datetime="${post.spec.publishTime}"
+                                                  th:if="${days > 1 && days <= 30}"
+                                                  th:title="'创建于 ' + ${#dates.format(post.spec.publishTime,'yyyy-MM-dd HH:mm:ss')}"
+                                                  th:text="${days} + '天前'"></time>
+                                            <time th:datetime="${post.spec.publishTime}"
+                                                  th:if="${days > 30}"
+                                                  th:title="'创建于 ' + ${#dates.format(post.spec.publishTime,'yyyy-MM-dd HH:mm:ss')}"
+                                                  th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"></time>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </th:block>
                     </div>
-                </div>
+                </th:block>
                 <!-- 分页 -->
                 <div th:replace="~{modules/widgets/page :: page('/archives',${archives},false,'')}"></div>
+                <script th:inline="javascript">
+                (function(){
+                    if(window.__haoArchiveReadBound) return;
+                    window.__haoArchiveReadBound = true;
+                    var KEY = 'hao-read-posts';
+                    function getRead(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return {};}}
+                    function saveRead(obj){localStorage.setItem(KEY,JSON.stringify(obj));}
+                    function getItemHref(item){
+                        var link=item.querySelector('.archive-item__title');
+                        return link ? link.getAttribute('href') : '';
+                    }
+                    function markRead(href){
+                        if(!href) return;
+                        var obj=getRead();
+                        if(!obj[href]){
+                            obj[href]=Date.now();
+                            var keys=Object.keys(obj);
+                            if(keys.length>500){
+                                keys.sort(function(a,b){return obj[a]-obj[b];});
+                                var toRemove=keys.slice(0,keys.length-400);
+                                toRemove.forEach(function(k){delete obj[k];});
+                            }
+                            saveRead(obj);
+                        }
+                    }
+                    function updateBadges(){
+                        var read=getRead();
+                        document.querySelectorAll('#archive .archive-item__unread').forEach(function(el){
+                            var link=el.getAttribute('href');
+                            if(link && read[link]){
+                                el.style.display='none';
+                            }
+                        });
+                    }
+                    function bindClicks(){
+                        document.querySelectorAll('#archive .archive-item[data-href-pjax]').forEach(function(item){
+                            if(item.dataset.readBound) return;
+                            item.dataset.readBound='1';
+                            item.addEventListener('click',function(){
+                                markRead(getItemHref(item));
+                            });
+                        });
+                    }
+                    function refresh(){updateBadges();bindClicks();}
+                    document.addEventListener('DOMContentLoaded',refresh);
+                    document.addEventListener('pjax:complete',refresh);
+                    document.addEventListener('pjax:success',refresh);
+                    refresh();
+                })();
+                </script>
             </div>
             <!-- sidebar -->
             <div th:replace="~{modules/aside :: aside(${theme.config.sidebar.widgetss.indexWidget})}"></div>
