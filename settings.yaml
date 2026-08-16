@@ -2191,7 +2191,7 @@ spec:
             - $formkit: text
               name: icon
               label: 图标类名
-              help: RemixIcon 类名，例如 ri-github-fill
+              help: haofont 类名，例如 haofont hao-icon-github
         - $formkit: array
           name: skills
           label: 技能标签
@@ -2237,6 +2237,89 @@ spec:
               name: desc
               label: 概述
               placeholder: 职责概述（不建议写太长）
+        - $formkit: text
+          name: motto
+          label: 座右铭
+          placeholder: 一句话座右铭
+          help: 显示在寄语区
+        - $formkit: text
+          name: email
+          label: 联系邮箱
+          placeholder: 例如：hello@example.com
+        - $formkit: array
+          name: projects
+          label: 个人项目
+          value: [ ]
+          help: 展示在关于页的个人项目卡片
+          itemLabels:
+            - type: text
+              label: $value.name
+          children:
+            - $formkit: text
+              name: name
+              label: 项目名称
+              validation: required
+            - $formkit: text
+              name: desc
+              label: 项目描述
+            - $formkit: url
+              name: url
+              label: 项目链接
+            - $formkit: text
+              name: icon
+              label: 图标类名
+              help: haofont 类名，例如 haofont hao-icon-github
+            - $formkit: text
+              name: tag
+              label: 标签
+              help: 右上角小标签，例如 Open Source
+        - $formkit: array
+          name: interests
+          label: 兴趣爱好
+          value: [ ]
+          help: 在关于页展示的兴趣标签
+          itemLabels:
+            - type: text
+              label: $value.name
+          children:
+            - $formkit: text
+              name: name
+              label: 名称
+              validation: required
+            - $formkit: text
+              name: icon
+              label: 图标类名
+              help: haofont 类名，例如 haofont hao-icon-coffee
+        - $formkit: repeater
+          name: techStack
+          label: 技术栈
+          value: [ ]
+          help: 按分类展示技术栈
+          itemLabels:
+            - type: text
+              label: $value.category
+          children:
+            - $formkit: text
+              name: category
+              label: 分类名称
+              validation: required
+              placeholder: 例如：前端
+            - $formkit: text
+              name: icon
+              label: 分类图标
+              help: haofont 类名，例如 haofont hao-icon-bianji
+            - $formkit: text
+              name: color
+              label: 分类颜色
+              help: 颜色值，例如 #F77234，不填默认为主题色
+            - $formkit: text
+              name: items
+              label: 技术列表
+              help: 用英文逗号分隔，例如：JavaScript,TypeScript,Vue,React
+        - $formkit: textarea
+          name: content
+          label: 我的介绍
+          help: 支持 HTML，显示在关于我正文区域
         - $formkit: select
           name: widget_list
           multiple: true

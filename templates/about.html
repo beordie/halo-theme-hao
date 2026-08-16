@@ -7,944 +7,1086 @@
                 _cover = ${singlePage.spec.cover},
                 _excerpt = ${singlePage.status.excerpt},
                 _type = 'website')}"></th:block>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
 </th:block>
 
 <th:block th:fragment="content">
-    <div class="page custom-about-page" id="body-wrap">
-    <!-- 引入字体和图标 -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+<th:block th:with="stats = ${siteStatsFinder.getStats()}">
+<div class="page custom-about-page" id="body-wrap">
+<style>
+    .custom-about-page {
+        --ab-primary: var(--heo-main);
+        --ab-primary-op: var(--heo-main-op);
+        --ab-primary-op-deep: var(--heo-main-op-deep);
+        --ab-teal: #0FC6C2;
+        --ab-teal-op: rgba(15,198,194,.08);
+        --ab-teal-op2: rgba(15,198,194,.18);
+        --ab-teal-op-pulse: rgba(15,198,194,.4);
+        --ab-orange: #F77234;
+        --ab-purple: #7B61FF;
+        --ab-purple-op: rgba(123,97,255,.06);
+        --ab-pink: #F53F95;
+        --ab-green: #00B42A;
+        --ab-yellow: #FF7D00;
+        --ab-bg: var(--heo-background);
+        --ab-card: var(--heo-card-bg);
+        --ab-border: var(--style-border-always);
+        --ab-border-hover: var(--style-border-hover-always);
+        --ab-gray-50: var(--heo-secondbg);
+        --ab-gray-400: var(--heo-secondtext);
+        --ab-gray-600: var(--heo-fontcolor);
+        --ab-gray-800: var(--heo-fontcolor);
+        --radius: 16px;
+        --radius-sm: 10px;
+        color: var(--ab-gray-800);
+        background: var(--ab-bg);
+        line-height: 1.7;
+        --ease: cubic-bezier(.4,0,.2,1);
+    }
 
-    <style>
-        /* ====================== 局部样式变量 ====================== */
-        .custom-about-page {
-            /* IT博客专属配色 - 更专业的科技感 */
-            --primary: #165DFF;
-            --primary-light: #4080FF;
-            --primary-opacity: rgba(22, 93, 255, 0.08);
-            --secondary: #0FC6C2;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-            --white: #ffffff;
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            --border-radius-sm: 6px;
-            --border-radius-md: 12px;
-            --border-radius-lg: 16px;
-            
-            color: var(--gray-800);
-            background-color: var(--gray-50);
-            line-height: 1.7;
-        }
+    .custom-about-page .ab-container {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
 
-        /* ====================== 容器与布局 ====================== */
-        .custom-about-page .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .custom-about-page .about-section {
-            background-color: var(--gray-50);
-        }
-        
-        .custom-about-page .about-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 40px;
-            align-items: flex-start;
-            padding-top: 20px; /* 增加顶部内边距，替代header */
-        }
-        
-        /* ====================== 修复 Sticky 定位 ====================== */
-        /* 确保父容器没有 overflow: hidden/auto 导致 sticky 失效 */
-        #content-inner, #page, .about-section, .container, .about-content {
-            overflow: visible !important;
-        }
+    .custom-about-page#body-wrap > main.layout#content-inner > div#page {
+        background: transparent;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        border-radius: 0;
+        overflow: visible;
+        width: 100%;
+        animation: none;
+    }
 
-        /* ====================== 左侧个人信息卡片 ====================== */
+    .custom-about-page .ab-wrap {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 28px;
+        align-items: flex-start;
+        padding-top: 28px;
+        padding-bottom: 48px;
+    }
+
+    /* ===== Shared card ===== */
+    .custom-about-page .ab-card {
+        background: var(--ab-card);
+        border-radius: var(--radius);
+        border: 1px solid var(--ab-border);
+        padding: 24px;
+        transition: border-color .25s var(--ease);
+    }
+
+    .custom-about-page .ab-card:hover {
+        border-color: var(--ab-border-hover);
+    }
+
+    /* ===== Section heading ===== */
+    .custom-about-page .ab-sec {
+        margin-bottom: 24px;
+    }
+    .custom-about-page .ab-sec:last-child { margin-bottom: 0; }
+
+    .custom-about-page .ab-sec-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+        padding: 0 4px;
+    }
+    .custom-about-page .ab-sec-icon i,
+    .custom-about-page .tech-cat-icon,
+    .custom-about-page .project-icon i,
+    .custom-about-page .interest-item i,
+    .custom-about-page .career-company i,
+    .custom-about-page .contact-btn i {
+        font-family: "haofont" !important;
+        font-style: normal;
+        -webkit-font-smoothing: antialiased;
+    }
+    .custom-about-page .ab-sec-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: var(--ab-primary-op);
+        color: var(--ab-primary);
+        display: grid;
+        place-items: center;
+        font-size: 0.78rem;
+        flex-shrink: 0;
+    }
+    .custom-about-page .ab-sec-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--ab-gray-800);
+        letter-spacing: -0.2px;
+    }
+    .custom-about-page .ab-sec-en {
+        font-size: 0.68rem;
+        color: var(--ab-gray-400);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 500;
+        margin-left: auto;
+    }
+
+    /* ===== Left profile ===== */
+    .custom-about-page .profile-card {
+        position: sticky;
+        top: 80px;
+        align-self: flex-start;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .custom-about-page .profile-cover {
+        height: 80px;
+        background: linear-gradient(135deg, var(--ab-primary), var(--ab-purple));
+        margin: -24px -24px 0;
+        border-radius: var(--radius) var(--radius) 0 0;
+        position: relative;
+    }
+    .custom-about-page .profile-cover::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(255,255,255,.15), transparent 60%);
+    }
+
+    .custom-about-page .avatar-wrap {
+        margin-top: -40px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .custom-about-page .avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--ab-card);
+        box-shadow: 0 2px 12px rgba(0,0,0,.08);
+        transition: transform .4s var(--ease);
+    }
+    .custom-about-page .avatar:hover {
+        transform: scale(1.05);
+    }
+
+    .custom-about-page .profile-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 12px 0 4px;
+        color: var(--ab-gray-800);
+        letter-spacing: -0.3px;
+    }
+
+    .custom-about-page .profile-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--ab-primary);
+        background: var(--ab-primary-op);
+        padding: 3px 10px;
+        border-radius: 999px;
+        margin-bottom: 12px;
+    }
+    .custom-about-page .profile-dot {
+        width: 5px; height: 5px;
+        border-radius: 50%;
+        background: var(--ab-primary);
+    }
+
+    .custom-about-page .profile-bio {
+        font-size: 0.82rem;
+        color: var(--ab-gray-400);
+        margin: 0 0 18px;
+        line-height: 1.65;
+    }
+
+    /* Stats */
+    .custom-about-page .blog-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2px;
+        padding: 14px 0;
+        border-top: 1px solid var(--ab-gray-50);
+        border-bottom: 1px solid var(--ab-gray-50);
+        margin-bottom: 16px;
+    }
+    .custom-about-page .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 4px 2px;
+        border-radius: 8px;
+        transition: background .2s;
+    }
+    .custom-about-page .stat-item:hover {
+        background: var(--ab-gray-50);
+    }
+    .custom-about-page .stat-num {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--ab-gray-800);
+        line-height: 1.2;
+        font-variant-numeric: tabular-nums;
+    }
+    .custom-about-page .stat-label {
+        font-size: 0.68rem;
+        color: var(--ab-gray-400);
+        margin-top: 2px;
+    }
+
+    /* Social */
+    .custom-about-page .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+    }
+    .custom-about-page .social-links a {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: var(--ab-gray-50);
+        display: grid;
+        place-items: center;
+        color: var(--ab-gray-400);
+        transition: all .2s var(--ease);
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    .custom-about-page .social-links a:hover {
+        background: var(--ab-primary);
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    /* Contact btn */
+    .custom-about-page .contact-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        padding: 9px 0;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--ab-primary), var(--ab-purple));
+        color: #fff;
+        font-size: 0.82rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all .25s var(--ease);
+        border: none;
+    }
+    .custom-about-page .contact-btn:hover {
+        opacity: .9;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px -4px var(--ab-primary-op);
+        color: #fff;
+    }
+
+    .custom-about-page .action-row {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+    }
+    .custom-about-page .action-row > * {
+        flex: 1;
+    }
+
+    .custom-about-page .reward-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 0;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--ab-orange);
+        font-size: 0.82rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all .25s var(--ease);
+        border: 1px solid var(--ab-orange);
+        cursor: pointer;
+    }
+    .custom-about-page .reward-btn:hover {
+        background: var(--ab-orange);
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px -4px rgba(247,114,52,.3);
+    }
+
+    /* Skills mini in profile */
+    .custom-about-page .profile-skills {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--ab-gray-50);
+    }
+    .custom-about-page .profile-skills-label {
+        font-size: 0.68rem;
+        color: var(--ab-gray-400);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin-bottom: 10px;
+        font-weight: 600;
+        text-align: center;
+    }
+    .custom-about-page .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        justify-content: center;
+    }
+    .custom-about-page .skill-tag {
+        padding: 3px 9px;
+        background: var(--ab-gray-50);
+        border-radius: 5px;
+        font-size: 0.72rem;
+        font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+        color: var(--ab-gray-600);
+        transition: all .2s;
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-block;
+    }
+    .custom-about-page .skill-tag:hover {
+        background: var(--ab-primary);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    /* ===== Right column ===== */
+    .custom-about-page .ab-right {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    /* Intro */
+    .custom-about-page .intro-text p {
+        color: var(--ab-gray-800);
+        margin: 0 0 12px;
+        line-height: 1.9;
+        font-size: 0.93rem;
+    }
+    .custom-about-page .intro-text p:last-child { margin-bottom: 0; }
+    .custom-about-page .hl {
+        color: var(--ab-primary);
+        font-weight: 600;
+        padding: 0 2px;
+    }
+    .custom-about-page .hl-pill {
+        display: inline-block;
+        padding: 1px 8px;
+        background: var(--ab-primary-op);
+        color: var(--ab-primary);
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.88em;
+    }
+
+    /* Now card */
+    .custom-about-page .now-card {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        padding: 16px 18px;
+        background: linear-gradient(135deg, var(--ab-teal-op), var(--ab-card));
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--ab-teal-op2);
+    }
+    .custom-about-page .now-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: var(--ab-teal);
+        margin-top: 7px;
+        flex-shrink: 0;
+        animation: ab-pulse 2s ease-in-out infinite;
+        box-shadow: 0 0 0 0 var(--ab-teal-op-pulse);
+    }
+    @keyframes ab-pulse {
+        0%, 100% { box-shadow: 0 0 0 0 var(--ab-teal-op-pulse); }
+        50% { box-shadow: 0 0 0 6px transparent; }
+    }
+    .custom-about-page .now-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--ab-teal);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin-bottom: 3px;
+    }
+    .custom-about-page .now-text {
+        font-size: 0.9rem;
+        color: var(--ab-gray-800);
+        line-height: 1.65;
+        margin: 0;
+    }
+    .custom-about-page .now-text a {
+        color: var(--ab-primary);
+        text-decoration: none;
+        border-bottom: 1px dashed var(--ab-primary);
+    }
+
+    /* Tech Stack */
+    .custom-about-page .tech-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .custom-about-page .tech-cat {
+        padding: 14px 16px;
+        background: var(--ab-gray-50);
+        border-radius: var(--radius-sm);
+        transition: background .2s;
+    }
+    .custom-about-page .tech-cat:hover {
+        background: var(--ab-primary-op-deep);
+    }
+    .custom-about-page .tech-cat-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    .custom-about-page .tech-cat-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .custom-about-page .tech-cat-name {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--ab-gray-800);
+    }
+    .custom-about-page .tech-cat-icon {
+        margin-left: auto;
+        color: var(--ab-gray-400);
+        font-size: 0.85rem;
+    }
+    .custom-about-page .tech-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    .custom-about-page .tech-item {
+        padding: 2px 8px;
+        background: var(--ab-card);
+        border: 1px solid var(--ab-border);
+        border-radius: 4px;
+        font-size: 0.72rem;
+        font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+        color: var(--ab-gray-600);
+        transition: all .2s;
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-block;
+    }
+    .custom-about-page .tech-item:hover {
+        border-color: var(--ab-primary);
+        color: var(--ab-primary);
+        transform: translateY(-1px);
+    }
+
+    /* Career timeline */
+    .custom-about-page .career-list {
+        position: relative;
+    }
+    .custom-about-page .career-list::before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 8px;
+        bottom: 8px;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--ab-primary) 0%, var(--ab-gray-50) 100%);
+        border-radius: 2px;
+    }
+    .custom-about-page .career-item {
+        position: relative;
+        padding: 0 0 20px 28px;
+    }
+    .custom-about-page .career-item:last-child { padding-bottom: 0; }
+    .custom-about-page .career-dot {
+        position: absolute;
+        left: 0;
+        top: 6px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--ab-card);
+        border: 3px solid var(--ab-primary);
+        z-index: 1;
+        transition: transform .2s;
+    }
+    .custom-about-page .career-item:hover .career-dot {
+        transform: scale(1.2);
+    }
+    .custom-about-page .career-date {
+        font-size: 0.73rem;
+        color: var(--ab-primary);
+        font-weight: 600;
+        margin-bottom: 4px;
+        font-variant-numeric: tabular-nums;
+    }
+    .custom-about-page .career-role {
+        font-size: 0.97rem;
+        font-weight: 600;
+        color: var(--ab-gray-800);
+        margin: 0 0 2px;
+    }
+    .custom-about-page .career-company {
+        font-size: 0.8rem;
+        color: var(--ab-gray-400);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .custom-about-page .career-desc {
+        font-size: 0.84rem;
+        color: var(--ab-gray-600);
+        line-height: 1.75;
+    }
+    .custom-about-page .career-desc ul {
+        padding: 0;
+        margin: 6px 0 0;
+        list-style: none;
+    }
+    .custom-about-page .career-desc li {
+        position: relative;
+        padding-left: 14px;
+        margin-bottom: 3px;
+        font-size: 0.83rem;
+        color: var(--ab-gray-400);
+    }
+    .custom-about-page .career-desc li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 9px;
+        width: 5px; height: 5px;
+        border-radius: 50%;
+        background: var(--ab-gray-400);
+        opacity: .5;
+    }
+
+    /* Projects */
+    .custom-about-page .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .custom-about-page .project-card {
+        display: block;
+        padding: 16px;
+        background: var(--ab-gray-50);
+        border-radius: var(--radius-sm);
+        text-decoration: none;
+        color: var(--ab-gray-800);
+        transition: all .25s var(--ease);
+        position: relative;
+    }
+    .custom-about-page .project-card:hover {
+        background: var(--ab-card);
+        border: 1px solid var(--ab-border-hover);
+        padding: 15px;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px -12px rgba(0,0,0,.1);
+        color: var(--ab-gray-800);
+    }
+    .custom-about-page .project-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    .custom-about-page .project-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: var(--ab-primary-op);
+        color: var(--ab-primary);
+        display: grid;
+        place-items: center;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+    .custom-about-page .project-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .custom-about-page .project-tag {
+        font-size: 0.62rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: var(--ab-primary-op);
+        color: var(--ab-primary);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .custom-about-page .project-desc {
+        font-size: 0.78rem;
+        color: var(--ab-gray-400);
+        line-height: 1.6;
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .custom-about-page .project-card.no-link { cursor: default; }
+
+    /* Interests */
+    .custom-about-page .interests-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .custom-about-page .interest-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        background: var(--ab-gray-50);
+        border-radius: 999px;
+        font-size: 0.8rem;
+        color: var(--ab-gray-600);
+        transition: all .2s var(--ease);
+    }
+    .custom-about-page .interest-item:hover {
+        background: var(--ab-primary-op);
+        color: var(--ab-primary);
+        transform: translateY(-1px);
+    }
+    .custom-about-page .interest-item i {
+        font-size: 0.85rem;
+        opacity: .8;
+    }
+
+    /* Motto */
+    .custom-about-page .motto-card {
+        padding: 28px 24px;
+        background: linear-gradient(135deg, var(--ab-primary-op), var(--ab-purple-op));
+        border-radius: var(--radius);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .custom-about-page .motto-card::before {
+        content: '"';
+        position: absolute;
+        top: -10px;
+        left: 20px;
+        font-size: 5rem;
+        font-family: Georgia, serif;
+        color: var(--ab-primary);
+        opacity: .1;
+        line-height: 1;
+    }
+    .custom-about-page .motto-text {
+        font-size: 0.95rem;
+        color: var(--ab-gray-800);
+        line-height: 1.8;
+        margin: 0 0 10px;
+        font-weight: 500;
+    }
+    .custom-about-page .motto-author {
+        font-size: 0.75rem;
+        color: var(--ab-gray-400);
+        font-style: normal;
+    }
+    .custom-about-page .motto-author::before {
+        content: '— ';
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+        .custom-about-page .ab-wrap {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
         .custom-about-page .profile-card {
-            background: var(--white);
-            border-radius: var(--border-radius-lg);
-            /* padding: 40px 30px;  移除整体 padding，改在子元素设置 */
-            padding: 0; 
-            box-shadow: var(--shadow);
-            text-align: center;
-            
-            /* Sticky 定位核心配置 */
-            position: -webkit-sticky;
-            position: sticky;
-            top: 80px; /* 预留顶部导航栏高度 */
-            align-self: start; /* 防止 Grid 拉伸高度 */
-            z-index: 10;
-            
-            max-height: calc(100vh - 100px);
-            /* overflow-y: auto;  移除整体滚动 */
-            overflow: hidden; /* 防止圆角溢出 */
-            border: 1px solid var(--gray-100);
-            
-            display: flex;
-            flex-direction: column;
+            position: static;
         }
+        .custom-about-page .tech-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    @media (max-width: 600px) {
+        .custom-about-page .ab-container { padding: 0 14px; }
+        .custom-about-page .projects-grid { grid-template-columns: 1fr; }
+        .custom-about-page .ab-card { padding: 20px; }
+        .custom-about-page .profile-cover { margin: -20px -20px 0; }
+    }
+</style>
 
-        /* 固定头部区域（头像、名字、职业） */
-        .custom-about-page .profile-header {
-            padding: 40px 30px 20px;
-            background: var(--white);
-            flex-shrink: 0; /* 防止被压缩 */
-            z-index: 2;
-        }
+<header class="not-top-img" id="page-header">
+    <nav th:replace="~{modules/nav :: nav(title = ${singlePage.spec.title})}"></nav>
+</header>
+<main class="layout hide-aside" id="content-inner">
+    <div id="page">
+        <div class="ab-container">
+            <div class="ab-wrap">
 
-        /* 可滚动内容区域 */
-        .custom-about-page .profile-scrollable {
-            padding: 0 30px 40px;
-            overflow-y: auto;
-            flex-grow: 1;
-            /* 隐藏滚动条但保留功能 */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
-        }
-        
-        .custom-about-page .profile-scrollable::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
-        }
-        
-        .custom-about-page .avatar {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto;
-            border: 5px solid var(--gray-50);
-            box-shadow: var(--shadow-sm);
-            display: block; /* 确保 margin: 0 auto 生效 */
-            transition: transform .6s ease, box-shadow .3s ease;
-        }
-        .custom-about-page .avatar:hover {
-            transform: rotate(12deg) scale(1.02);
-            box-shadow: var(--shadow);
-        }
-        .custom-about-page .avatar-wrap {
-            position: relative;
-            width: max-content;
-            margin: 0 auto 20px;
-        }
-        .custom-about-page .avatar-wrap::after {
-            content: "";
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 160px;
-            height: 160px;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            border: 2px dashed var(--primary);
-            opacity: .6;
-            animation: avatar-spin 10s linear infinite;
-            pointer-events: none;
-        }
-        @keyframes avatar-spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        
-        .custom-about-page .profile-name {
-            font-size: 1.7rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            margin-top: 0; /* 消除默认 margin */
-            color: var(--gray-900);
-            letter-spacing: -0.5px;
-            display: block; /* 确保表现为块级元素 */
-        }
-        
-        .custom-about-page .profile-title {
-            color: var(--primary);
-            font-weight: 500;
-            margin-bottom: 16px;
-            font-size: 1rem;
-            display: inline-block;
-            background-color: var(--primary-opacity);
-            padding: 4px 12px;
-            border-radius: 16px;
-        }
-        
-        .custom-about-page .profile-desc {
-            color: var(--gray-600);
-            margin-bottom: 24px;
-            line-height: 1.7;
-            font-size: 0.95rem;
-            padding: 0 8px;
-        }
-        
-        /* 社交链接 */
-        .custom-about-page .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 24px;
-            /* border-top: 1px solid var(--gray-100); */
-            padding-top: 20px;
-        }
-        
-        .custom-about-page .social-links a {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background-color: var(--gray-50);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray-700);
-            transition: all 0.2s ease;
-            text-decoration: none;
-            border: 1px solid var(--gray-200);
-        }
-        
-        .custom-about-page .social-links a:hover {
-            background-color: var(--primary);
-            color: var(--white);
-            transform: translateY(-2px);
-            border-color: var(--primary);
-            box-shadow: 0 4px 8px rgba(22, 93, 255, 0.15);
-        }
-        
-        /* 技能分类容器 */
-        .custom-about-page .skills-container {
-            /* border-top: 1px solid var(--gray-100); */
-            padding-top: 20px;
-        }
-        
-        /* 技能列表 */
-        .custom-about-page .skill-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 10px;
-            justify-content: center;
-        }
-        
-        /* 技能项 */
-        .custom-about-page .skill-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background-color: var(--white);
-            border-radius: 8px; /* 减小圆角 */
-            font-size: 0.8rem; /* 缩小字体 */
-            transition: all 0.2s ease;
-            border: 1px solid var(--gray-200);
-            font-family: monospace;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .custom-about-page .skill-item:hover {
-            background-color: var(--primary);
-            color: var(--white);
-            border-color: var(--primary);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(22, 93, 255, 0.1);
-        }
-        
-        .custom-about-page .skill-name {
-            color: var(--gray-700);
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        
-        .custom-about-page .skill-item:hover .skill-name {
-            color: var(--white);
-        }
-        
+                <!-- ===== 左侧个人卡片 ===== -->
+                <aside class="profile-card ab-card">
+                    <div class="profile-cover"></div>
+                    <div class="avatar-wrap">
+                        <img class="avatar"
+                             th:src="${!#strings.isEmpty(theme.config.about?.aboutAuthorImage) ? theme.config.about.aboutAuthorImage : site.logo}"
+                             alt="avatar">
+                    </div>
+                    <h1 class="profile-name" th:text="${!#strings.isEmpty(theme.config.sidebar?.profile?.profileName) ? theme.config.sidebar.profile.profileName : site.title}"></h1>
+                    <div class="profile-title">
+                        <span class="profile-dot"></span>
+                        <span th:if="${!#strings.isEmpty(theme.config.about?.authorTitle)}" th:text="${theme.config.about.authorTitle}"></span>
+                        <span th:if="${#strings.isEmpty(theme.config.about?.authorTitle) and !#strings.isEmpty(theme.config.sidebar?.profile?.profileIdentity)}" th:text="${theme.config.sidebar.profile.profileIdentity}"></span>
+                    </div>
+                    <p class="profile-bio"
+                       th:if="${!#strings.isEmpty(theme.config.sidebar?.profile?.profileDesc)}"
+                       th:utext="${theme.config.sidebar.profile.profileDesc}"></p>
 
-        
-        /* ====================== 右侧内容区 ====================== */
-        .custom-about-page .about-right {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            min-width: 0;
-        }
-        
-        /* 通用标题样式 */
-        .custom-about-page .section-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 24px;
-            position: relative;
-            color: var(--gray-900);
-            display: inline-block;
-            letter-spacing: -0.5px;
-        }
-        
-        .custom-about-page .section-title::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: -6px;
-            width: 40px;
-            height: 3px;
-            background-color: var(--primary);
-            border-radius: 2px;
-        }
-        
-        /* 个人介绍文本 */
-        .custom-about-page .about-text {
-            padding: 24px;
-            background-color: var(--white);
-            border-radius: var(--border-radius-md);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--gray-100);
-        }
-        
-        .custom-about-page .about-desc {
-            color: var(--gray-700);
-            margin-bottom: 20px;
-            line-height: 1.8;
-            font-size: 1rem;
-            text-align: justify;
-        }
-        
-        .custom-about-page .about-desc:last-child {
-            margin-bottom: 0;
-        }
-        
-        /* 代码动效区块 */
-        .custom-about-page .code-block {
-            background-color: var(--gray-900);
-            color: var(--white);
-            padding: 20px;
-            border-radius: var(--border-radius-md);
-            font-family: monospace;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            border: 1px solid var(--gray-800);
-            box-shadow: var(--shadow);
-        }
-        
-        .custom-about-page .code-header {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            align-items: center;
-        }
-        
-        .custom-about-page .code-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        
-        .custom-about-page .dot-red {
-            background-color: #ff5f56;
-        }
-        
-        .custom-about-page .dot-yellow {
-            background-color: #ffbd2e;
-        }
-        
-        .custom-about-page .dot-green {
-            background-color: #27c93f;
-        }
-        
-        .custom-about-page .code-filename {
-            color: var(--gray-300);
-            font-size: 0.85rem;
-            margin-left: 16px;
-        }
-        
-        .custom-about-page .code-content {
-            white-space: pre-wrap;
-            color: #a2b1fb;
-            line-height: 1.6;
-        }
-        
-        /* ====================== 工作经历模块（重点优化） ====================== */
-        .custom-about-page .career-section {
-            margin-bottom: 0;
-        }
-        
-        /* 升级版纵向时间轴 */
-        .custom-about-page .career-timeline {
-            position: relative;
-            padding-left: 50px;
-        }
-        
-        /* 时间轴主线 - 增强科技感 */
-        .custom-about-page .career-timeline::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, var(--primary), var(--secondary));
-            border-radius: 1px;
-            box-shadow: 0 0 8px rgba(22, 93, 255, 0.15);
-        }
-        
-        /* 卡片容器 */
-        .custom-about-page .career-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 32px; /* 增加卡片间距，提升呼吸感 */
-        }
-        
-        /* 工作经历卡片 - 重点优化样式 */
-        .custom-about-page .career-card {
-            background-color: var(--white);
-            border-radius: var(--border-radius-md);
-            padding: 32px; /* 增加内边距 */
-            box-shadow: var(--shadow); /* 增强基础阴影 */
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 更顺滑的过渡 */
-            position: relative;
-            border: 1px solid var(--gray-100);
-            overflow: hidden; /* 为伪元素做准备 */
-        }
-        .custom-about-page .career-logo {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 52px;
-            height: 52px;
-            z-index: 2;
-        }
-        .custom-about-page .logo-hex {
-            width: 100%;
-            height: 100%;
-            display: grid;
-            place-items: center;
-            background: conic-gradient(from 180deg at 50% 50%, var(--primary), var(--secondary));
-            clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-        }
-        .custom-about-page .logo-hex img {
-            width: 70%;
-            height: 70%;
-            object-fit: contain;
-            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
-        }
-        .custom-about-page .logo-hex i {
-            color: #fff;
-            font-size: 22px;
-            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
-        }
-        
-        /* 卡片顶部渐变装饰条 */
-        .custom-about-page .career-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-        }
-        
-        /* 时间轴节点 - 增强视觉效果 */
-        .custom-about-page .career-card::before {
-            content: '';
-            position: absolute;
-            left: -50px;
-            top: 32px; /* 调整位置 */
-            width: 18px; /* 增大尺寸 */
-            height: 18px;
-            border-radius: 50%;
-            background: var(--white);
-            border: 3px solid var(--primary); /* 加粗边框 */
-            box-shadow: 0 0 0 6px var(--primary-opacity); /* 增大光晕 */
-            z-index: 1;
-            transition: all 0.3s ease;
-        }
-        
-        /* 卡片悬浮效果 - 增强动感 */
-        .custom-about-page .career-card:hover {
-            transform: translateY(-6px) scale(1.01); /* 轻微放大 + 上移 */
-            box-shadow: var(--shadow-lg); /* 增强悬浮阴影 */
-            border-color: var(--primary-light);
-        }
-        
-        /* 悬浮时节点效果 */
-        .custom-about-page .career-card:hover::before {
-            background-color: var(--primary);
-            transform: scale(1.2); /* 更大的缩放 */
-            box-shadow: 0 0 0 8px rgba(22, 93, 255, 0.15);
-        }
-        
-        /* 悬浮时顶部渐变条效果 */
-        .custom-about-page .career-card:hover::after {
-            opacity: 1;
-        }
-        
-        /* 时间标签 - 优化样式 */
-        .custom-about-page .career-period {
-            display: inline-block;
-            font-size: 0.85rem;
-            color: var(--primary);
-            background-color: var(--primary-opacity);
-            padding: 6px 16px; /* 增大内边距 */
-            border-radius: 20px; /* 更圆润 */
-            font-weight: 500;
-            margin-bottom: 20px; /* 增加间距 */
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-        }
-        
-        .custom-about-page .career-card:hover .career-period {
-            background-color: var(--primary);
-            color: var(--white);
-            transform: translateX(4px);
-        }
-        
-        .custom-about-page .career-position {
-            font-size: 1.3rem; /* 增大字号 */
-            font-weight: 700; /* 加粗 */
-            margin-bottom: 12px; /* 增加间距 */
-            color: var(--gray-900);
-            letter-spacing: -0.3px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        /* 职位前添加小图标 */
-        .custom-about-page .career-position::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 18px;
-            background-color: var(--primary);
-            border-radius: 2px;
-            opacity: 0.7;
-            transition: opacity 0.2s ease;
-        }
-        
-        .custom-about-page .career-card:hover .career-position::before {
-            opacity: 1;
-        }
-        
-        .custom-about-page .career-company {
-            font-size: 1rem;
-            color: var(--gray-600);
-            margin-bottom: 20px; /* 增加间距 */
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-left: 12px; /* 增加缩进 */
-        }
-        
-        .custom-about-page .career-company i {
-            font-size: 1.1rem; /* 增大图标 */
-            color: var(--primary-light);
-        }
-        
-        .custom-about-page .career-desc {
-            color: var(--gray-700);
-            font-size: 0.95rem;
-            line-height: 1.8; /* 增大行高 */
-            padding-left: 12px; /* 增加缩进 */
-        }
-        
-        .custom-about-page .career-desc ul {
-            padding-left: 24px; /* 增大缩进 */
-            margin-top: 12px;
-        }
-        
-        .custom-about-page .career-desc li {
-            list-style: none; /* 移除默认的列表符号 */
-            margin-bottom: 12px;
-            position: relative;
-            padding-left: 18px;
-            transition: all 0.2s ease;
-            background: rgba(243, 244, 246, 0.5);
-            padding: 8px 12px 8px 24px;
-            border-radius: 6px;
-        }
-        
-        .custom-about-page .career-card:hover .career-desc li {
-            background: rgba(22, 93, 255, 0.05); /* 悬浮时背景变色 */
-        }
-        
-        .custom-about-page .career-desc li::before {
-            content: ''; /* 改用圆点 */
-            width: 6px;
-            height: 6px;
-            background-color: var(--primary);
-            border-radius: 50%;
-            position: absolute;
-            left: 8px;
-            top: 18px; /* 居中对齐 */
-            transition: all 0.2s ease;
-        }
-        
-        .custom-about-page .career-card:hover .career-desc li::before {
-            transform: scale(1.2);
-            box-shadow: 0 0 0 2px rgba(22, 93, 255, 0.2);
-        }
-        
-        /* ====================== 个人寄语模块 ====================== */
-        .custom-about-page .quote-section {
-            background-color: var(--white);
-            padding: 28px;
-            border-radius: var(--border-radius-md);
-            box-shadow: var(--shadow-sm);
-            text-align: center;
-            border-left: 3px solid var(--primary);
-            border: 1px solid var(--gray-100);
-        }
-        
-        .custom-about-page .quote-icon {
-            font-size: 1.8rem;
-            color: var(--primary-light);
-            margin-bottom: 12px;
-            opacity: 0.6;
-        }
-        
-        .custom-about-page .quote-text {
-            font-size: 1rem;
-            color: var(--gray-700);
-            line-height: 1.8;
-            font-style: italic;
-            margin-bottom: 12px;
-        }
-        
-        .custom-about-page .quote-author {
-            color: var(--primary);
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        
-        /* ====================== 响应式适配 ====================== */
-        @media (max-width: 992px) {
-            .custom-about-page .about-content {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-            
-            .custom-about-page .profile-card {
-                position: static;
-                max-height: none;
-                overflow-y: visible;
-                margin-bottom: 0;
-            }
-            
-            .custom-about-page .about-text {
-                padding: 20px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .custom-about-page .section-title {
-                font-size: 1.6rem;
-            }
-            
-            .custom-about-page .career-card {
-                padding: 24px;
-            }
-            
-            /* 移动端简化时间轴 */
-            .custom-about-page .career-timeline {
-                padding-left: 40px;
-            }
-            
-            .custom-about-page .career-timeline::before {
-                left: 16px;
-                width: 2px;
-            }
-            
-            .custom-about-page .career-card::before {
-                left: -40px;
-                width: 16px;
-                height: 16px;
-            }
-            
-            /* 移动端技能项 */
-            .custom-about-page .skill-list {
-                gap: 8px;
-            }
-            
-            .custom-about-page .skill-item {
-                padding: 4px 8px;
-                font-size: 0.8rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .custom-about-page .profile-card {
-                padding: 30px 20px;
-            }
-            
-            .custom-about-page .avatar {
-                width: 120px;
-                height: 120px;
-            }
-            
-            .custom-about-page .section-title {
-                font-size: 1.4rem;
-            }
-            
-            .custom-about-page .career-card {
-                padding: 20px;
-            }
-            
-            .custom-about-page .career-position {
-                font-size: 1.1rem;
-            }
-            
-            /* 移动端进一步简化时间轴 */
-            .custom-about-page .career-timeline {
-                padding-left: 30px;
-            }
-            
-            .custom-about-page .career-timeline::before {
-                left: 12px;
-            }
-            
-            .custom-about-page .career-card::before {
-                left: -30px;
-                width: 14px;
-                height: 14px;
-            }
-            
-            .custom-about-page .career-period {
-                font-size: 0.8rem;
-                padding: 4px 12px;
-            }
-            
-            .custom-about-page .code-block {
-                font-size: 0.8rem;
-                padding: 16px;
-            }
-            
-            .custom-about-page .about-section {
-                padding: 40px 0 60px;
-            }
-        }
-    </style>
-        
-        <!-- 头部导航栏 -->
-        <header class="not-top-img" id="page-header">
-            <nav th:replace="~{modules/nav :: nav(title = ${singlePage.spec.title})}"></nav>
-        </header>
-        <main class="layout hide-aside" id="content-inner">
-            <div id="page">
-                <!-- About 主体内容 -->
-                <section class="about-section">
-                    <div class="container">
-                        <div class="about-content">
-                            <!-- 左侧个人信息卡片 -->
-                            <div class="profile-card">
-                                <!-- 固定头部 -->
-                                <div class="profile-header">
-                                    <div class="author-img" th:if="${!#strings.isEmpty(theme.config.about?.aboutAuthorImage)}">
-                                        <div class="avatar-wrap">
-                                            <img th:src="${theme.config.about.aboutAuthorImage}" alt="个人头像" class="avatar">
-                                        </div>
-                                    </div>
-                                    <div class="profile-name" th:if="${not #strings.isEmpty(theme.config.sidebar.profile.profileName)}"
-                                         th:text="${theme.config.sidebar.profile.profileName}"></div>
-                                    <p class="profile-title" th:text="${theme.config.about.authorTitle}"></p>
-                                </div>
-                                
-                                <!-- 可滚动区域 -->
-                                <div class="profile-scrollable">
+                    <div class="blog-stats">
+                        <div class="stat-item">
+                            <span class="stat-num" th:text="${stats.post}"></span>
+                            <span class="stat-label">文章</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-num" th:text="${stats.category}"></span>
+                            <span class="stat-label">分类</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-num" th:text="${stats.comment}"></span>
+                            <span class="stat-label">评论</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-num" th:text="${stats.visit}"></span>
+                            <span class="stat-label">访问</span>
+                        </div>
+                    </div>
 
-                                    
-                                    <!-- 社交链接 -->
-                                    <div class="social-links" th:if="${theme.config.about.socialLinks != null and !#lists.isEmpty(theme.config.about.socialLinks)}">
-                                        <a th:each="link : ${theme.config.about.socialLinks}"
-                                           th:if="${!#strings.isEmpty(link.url) and !#strings.isEmpty(link.icon)}"
-                                           th:href="${link.url}" target="_blank" th:title="${link.name}">
-                                            <i th:class="${link.icon}"></i>
-                                        </a>
-                                    </div>
-                                    <div class="social-links" th:if="${#lists.isEmpty(theme.config.about.socialLinks)}">
-                                        <a href="#" target="_blank" title="GitHub"><i class="ri-github-fill"></i></a>
-                                        <a href="#" target="_blank" title="微博"><i class="ri-weibo-fill"></i></a>
-                                        <a href="#" target="_blank" title="微信"><i class="ri-wechat-fill"></i></a>
-                                        <a href="#" target="_blank" title="LinkedIn"><i class="ri-linkedin-fill"></i></a>
-                                        <a href="#" target="_blank" title="CSDN"><i class="ri-csdn-fill"></i></a>
-                                    </div>
-                                    
-                                    <!-- 技能模块 -->
-                                    <div class="skills-container" th:if="${theme.config.about.skills != null and !#lists.isEmpty(theme.config.about.skills)}">
-                                        <div class="skill-list">
-                                            <div class="skill-item" th:each="s : ${theme.config.about.skills}">
-                                                <span class="skill-name" th:text="${s.name}"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="skills-container" th:if="${theme.config.about.skills == null or #lists.isEmpty(theme.config.about.skills)}">
-                                        <div class="skill-list">
-                                            <div class="skill-item"><span class="skill-name">JavaScript/TS</span></div>
-                                            <div class="skill-item"><span class="skill-name">HTML5/CSS3</span></div>
-                                            <div class="skill-item"><span class="skill-name">Node.js</span></div>
-                                            <div class="skill-item"><span class="skill-name">React</span></div>
-                                            <div class="skill-item"><span class="skill-name">Vue</span></div>
-                                            <div class="skill-item"><span class="skill-name">小程序</span></div>
-                                            <div class="skill-item"><span class="skill-name">工程化</span></div>
-                                            <div class="skill-item"><span class="skill-name">微前端</span></div>
-                                            <div class="skill-item"><span class="skill-name">性能优化</span></div>
-                                            <div class="skill-item"><span class="skill-name">可视化</span></div>
-                                            <div class="skill-item"><span class="skill-name">3D</span></div>
-                                            <div class="skill-item"><span class="skill-name">跨端</span></div>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="social-links" th:if="${theme.config.about?.socialLinks != null and !#lists.isEmpty(theme.config.about.socialLinks)}">
+                        <a th:each="link : ${theme.config.about.socialLinks}"
+                           th:if="${!#strings.isEmpty(link.url) and !#strings.isEmpty(link.icon)}"
+                           th:href="${link.url}" target="_blank" rel="noopener" th:title="${link.name}">
+                            <i th:class="${link.icon}"></i>
+                        </a>
+                    </div>
+
+                    <div class="action-row">
+                        <a th:if="${!#strings.isEmpty(theme.config.about?.email)}"
+                           class="contact-btn" th:href="'mailto:' + ${theme.config.about.email}">
+                            <i class="haofont hao-icon-paper-plane"></i>
+                            <span>联系我</span>
+                        </a>
+                        <button th:if="${theme.config.aboutReward.aboutRewardEnable and theme.config.aboutReward.reward.enable_reward}"
+                                class="reward-btn" type="button" onclick="heo.rewardShowConsole()">
+                            <i class="haofont hao-icon-hand-heart-fill"></i>
+                            <span>请我喝杯咖啡</span>
+                        </button>
+                    </div>
+
+                    <div class="profile-skills">
+                        <div class="profile-skills-label">Tech Stack</div>
+                        <div class="skill-tags" th:if="${theme.config.about?.skills != null and !#lists.isEmpty(theme.config.about.skills)}">
+                            <th:block th:each="s : ${theme.config.about.skills}">
+                                <a class="skill-tag"
+                                   th:with="tagItem=${tagFinder.getByName(s.name)}"
+                                   th:if="${tagItem}"
+                                   th:href="@{${tagItem.status.permalink}}"
+                                   th:text="${s.name}"></a>
+                                <span class="skill-tag" th:unless="${tagItem}" th:text="${s.name}"></span>
+                            </th:block>
+                        </div>
+                        <div class="skill-tags" th:if="${theme.config.about?.skills == null or #lists.isEmpty(theme.config.about.skills)}">
+                            <th:block th:with="tagItem=${tagFinder.getByName('JavaScript')}">
+                                <a class="skill-tag" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">JavaScript</a>
+                                <span class="skill-tag" th:unless="${tagItem}">JavaScript</span>
+                            </th:block>
+                            <th:block th:with="tagItem=${tagFinder.getByName('TypeScript')}">
+                                <a class="skill-tag" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">TypeScript</a>
+                                <span class="skill-tag" th:unless="${tagItem}">TypeScript</span>
+                            </th:block>
+                            <th:block th:with="tagItem=${tagFinder.getByName('Node.js')}">
+                                <a class="skill-tag" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Node.js</a>
+                                <span class="skill-tag" th:unless="${tagItem}">Node.js</span>
+                            </th:block>
+                            <th:block th:with="tagItem=${tagFinder.getByName('React')}">
+                                <a class="skill-tag" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">React</a>
+                                <span class="skill-tag" th:unless="${tagItem}">React</span>
+                            </th:block>
+                            <th:block th:with="tagItem=${tagFinder.getByName('Vue')}">
+                                <a class="skill-tag" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Vue</a>
+                                <span class="skill-tag" th:unless="${tagItem}">Vue</span>
+                            </th:block>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- ===== 右侧内容 ===== -->
+                <div class="ab-right">
+
+                    <!-- 个人介绍 -->
+                    <div class="ab-sec">
+                        <div class="ab-card">
+                            <div class="ab-sec-head">
+                                <div class="ab-sec-icon"><i class="haofont hao-icon-zuozhe"></i></div>
+                                <h2 class="ab-sec-title">关于我</h2>
+                                <span class="ab-sec-en">About</span>
                             </div>
-
-                            <!-- 右侧内容区 -->
-                            <div class="about-right">
-                                <!-- 个人介绍文本 -->
-                                <div class="about-text">
-                                    <h1 class="section-title">关于我</h1>
-                                    <p class="about-desc">
-                                        白天写业务，晚上写 Bug；偶尔把 Bug 修成 Feature。
-                                        喜欢把复杂需求拆到产品经理开始反思人生，然后再把它们组装成更简单的方案。
-                                    </p>
-                                    <p class="about-desc">
-                                        我的拿手好戏是让页面从
-                                        <span style="display:inline-block;padding:.2rem .5rem;border-radius:999px;background:var(--primary-opacity);color:var(--primary);font-weight:600;">会动</span>
-                                        进化到
-                                        <span style="display:inline-block;padding:.2rem .5rem;border-radius:999px;background:var(--primary-opacity);color:var(--primary);font-weight:600;">很快</span>，
-                                        并努力让代码从
-                                        <span style="display:inline-block;padding:.2rem .5rem;border-radius:999px;background:var(--primary-opacity);color:var(--primary);font-weight:600;">能跑</span>
-                                        升级到
-                                        <span style="display:inline-block;padding:.2rem .5rem;border-radius:999px;background:var(--primary-opacity);color:var(--primary);font-weight:600;">能看</span>。
-                                        相信世界上没有解决不了的问题，只有不够幽默的提交说明。
-                                    </p>
-                                    
-                                    <!-- 代码动效区块 -->
-                                    <div class="code-block">
-                                        <div class="code-header">
-                                            <div class="code-dot dot-red"></div>
-                                            <div class="code-dot dot-yellow"></div>
-                                            <div class="code-dot dot-green"></div>
-                                            <div class="code-filename">dev-philosophy.js</div>
-                                        </div>
-                                        <div class="code-content">
-// 极简开发理念
-const devPhilosophy = {
-  core: "性能与体验并存",
-  principle: "极简、高效、可扩展",
-  goal: "用代码创造价值",
-  motto: "Less is more",
-  vision: "让复杂的技术变得简单"
-};
-                                        </div>
-                                    </div>
-
-                                    <p class="about-desc">
-                                        不聊 KPI，只聊用户体验；不卷语法，只卷可读性。
-                                        写代码像讲段子：节奏要稳，梗要准，回车键敲下去要让人会心一笑。
-                                    </p>
-                                </div>
-
-                                <!-- 工作经历 -->
-                                <div class="career-section">
-                                    <h2 class="section-title">工作经历</h2>
-                                    <div class="career-timeline">
-                                        <div class="career-cards" th:if="${theme.config.about.careers != null and !#lists.isEmpty(theme.config.about.careers)}">
-                                            <div class="career-card" th:each="c : ${theme.config.about.careers}">
-                                                <div class="career-logo">
-                                                    <div class="logo-hex">
-                                                        <img th:if="${not #strings.isEmpty(c.logo)}" th:src="${c.logo}" alt="">
-                                                        <i class="ri-building-2-fill" th:if="${#strings.isEmpty(c.logo)}"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="career-period" th:text="${c.period}"></div>
-                                                <h3 class="career-position" th:text="${c.position}"></h3>
-                                                <div class="career-company">
-                                                    <i class="ri-building-line"></i>
-                                                    <span th:text="${c.company}"></span>
-                                                </div>
-                                                <div class="career-desc" th:text="${c.desc}"></div>
-                                            </div>
-                                        </div>
-                                        <div class="career-cards" th:if="${theme.config.about.careers == null or #lists.isEmpty(theme.config.about.careers)}">
-                                            <div class="career-card">
-                                                <div class="career-logo">
-                                                    <div class="logo-hex">
-                                                        <i class="ri-building-2-fill"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="career-period">2021 - 至今</div>
-                                                <h3 class="career-position">前端架构师</h3>
-                                                <div class="career-company">
-                                                    <i class="ri-building-line"></i>
-                                                    <span>某头部互联网公司 · 北京</span>
-                                                </div>
-                                                <div class="career-desc">
-                                                    负责公司核心产品前端架构设计与落地，主导前端工程化体系建设，推动技术栈升级与性能优化。
-                                                </div>
-                                            </div>
-                                            <div class="career-card">
-                                                <div class="career-logo">
-                                                    <div class="logo-hex">
-                                                        <i class="ri-building-2-fill"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="career-period">2018 - 2021</div>
-                                                <h3 class="career-position">高级前端开发工程师</h3>
-                                                <div class="career-company">
-                                                    <i class="ri-building-line"></i>
-                                                    <span>某独角兽企业 · 北京</span>
-                                                </div>
-                                                <div class="career-desc">
-                                                    负责大数据可视化平台的前端开发与架构优化，参与核心产品从 0 到 1 的搭建。
-                                                </div>
-                                            </div>
-                                            <div class="career-card">
-                                                <div class="career-logo">
-                                                    <div class="logo-hex">
-                                                        <i class="ri-building-2-fill"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="career-period">2016 - 2018</div>
-                                                <h3 class="career-position">前端开发工程师</h3>
-                                                <div class="career-company">
-                                                    <i class="ri-building-line"></i>
-                                                    <span>某传统软件企业 · 北京</span>
-                                                </div>
-                                                <div class="career-desc">
-                                                    负责企业级管理系统的前端开发，参与从 jQuery 到 Vue 技术栈的迁移。
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- 个人寄语 -->
-                                <div class="quote-section">
-                                    <i class="ri-double-quotes-l quote-icon"></i>
-                                    <p class="quote-text">
-                                        技术的本质是解决问题，而不是炫技。我始终相信，最好的代码是那些能够优雅解决问题、
-                                        易于理解和维护的代码。保持学习的热情，保持对技术的敬畏，
-                                        用简单的方式解决复杂的问题，这就是我一直坚持的技术之道。
-                                    </p>
-                                    <p class="quote-author">—— 勿川 </p>
-                                </div>
+                            <div class="intro-text" th:if="${!#strings.isEmpty(theme.config.about?.content)}" th:utext="${theme.config.about.content}"></div>
+                            <div class="intro-text" th:if="${#strings.isEmpty(theme.config.about?.content)}">
+                                <p>你好，我是一名<span class="hl">软件工程师</span>。白天写业务，晚上写 Bug；偶尔把 Bug 修成 Feature。喜欢把复杂需求拆到最简单，然后再用代码把它们组装回来。</p>
+                                <p>擅长让页面从「会动」进化到「<span class="hl">很快</span>」，也努力让代码从「能跑」升级到「<span class="hl">能看</span>」。相信世界上没有解决不了的问题，只有不够清晰的需求。</p>
+                                <p>不聊 KPI，只聊<span class="hl-pill">用户体验</span>；不卷语法，只卷<span class="hl-pill">可读性</span>。写代码像讲段子——节奏要稳，梗要准，回车键敲下去要让人会心一笑。</p>
                             </div>
                         </div>
                     </div>
-                </section>
+
+                    <!-- 最近在做 -->
+                    <div class="ab-sec" th:if="${!#strings.isEmpty(theme.config.sidebar?.profile?.currentFocusText)}">
+                        <div class="ab-sec-head">
+                            <div class="ab-sec-icon" style="background:rgba(15,198,194,.1);color:var(--ab-teal);"><i class="haofont hao-icon-bolt"></i></div>
+                            <h2 class="ab-sec-title">最近在做</h2>
+                            <span class="ab-sec-en">Now</span>
+                        </div>
+                        <div class="now-card">
+                            <div class="now-dot"></div>
+                            <div>
+                                <p class="now-text">
+                                    <a th:if="${!#strings.isEmpty(theme.config.sidebar.profile?.currentFocusUrl)}"
+                                       th:href="${theme.config.sidebar.profile.currentFocusUrl}"
+                                       th:text="${theme.config.sidebar.profile.currentFocusText}"></a>
+                                    <th:block th:if="${#strings.isEmpty(theme.config.sidebar.profile?.currentFocusUrl)}"
+                                              th:text="${theme.config.sidebar.profile.currentFocusText}"></th:block>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 技术栈 -->
+                    <div class="ab-sec">
+                        <div class="ab-sec-head">
+                            <div class="ab-sec-icon"><i class="haofont hao-icon-keyboard"></i></div>
+                            <h2 class="ab-sec-title">技术栈</h2>
+                            <span class="ab-sec-en">Tech Stack</span>
+                        </div>
+                        <div class="tech-grid">
+                            <th:block th:if="${theme.config.about?.techStack != null and !#lists.isEmpty(theme.config.about.techStack)}">
+                                <div class="tech-cat" th:each="t : ${theme.config.about.techStack}">
+                                    <div class="tech-cat-head">
+                                        <span class="tech-cat-dot" th:style="'background:' + ${t.color != null ? t.color : 'var(--ab-primary)'}"></span>
+                                        <span class="tech-cat-name" th:text="${t.category}"></span>
+                                        <i class="tech-cat-icon" th:if="${!#strings.isEmpty(t.icon)}" th:class="${t.icon}"></i>
+                                    </div>
+                                    <div class="tech-items">
+                                        <th:block th:each="item : ${#strings.arraySplit(#strings.replace(t.items, '，', ','), ',')}">
+                                            <th:block th:if="${!#strings.isEmpty(#strings.trim(item))}" th:with="itemName=${#strings.trim(item)}, tagItem=${tagFinder.getByName(#strings.trim(item))}">
+                                                <a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}" th:text="${itemName}"></a>
+                                                <span class="tech-item" th:unless="${tagItem}" th:text="${itemName}"></span>
+                                            </th:block>
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </th:block>
+                            <th:block th:if="${theme.config.about?.techStack == null or #lists.isEmpty(theme.config.about.techStack)}">
+                                <div class="tech-cat">
+                                    <div class="tech-cat-head">
+                                        <span class="tech-cat-dot" style="background:var(--ab-orange);"></span>
+                                        <span class="tech-cat-name">前端开发</span>
+                                        <i class="tech-cat-icon haofont hao-icon-bianji"></i>
+                                    </div>
+                                    <div class="tech-items">
+                                        <th:block th:with="tagItem=${tagFinder.getByName('JavaScript')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">JavaScript</a><span class="tech-item" th:unless="${tagItem}">JavaScript</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('TypeScript')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">TypeScript</a><span class="tech-item" th:unless="${tagItem}">TypeScript</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('Vue')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Vue</a><span class="tech-item" th:unless="${tagItem}">Vue</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('React')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">React</a><span class="tech-item" th:unless="${tagItem}">React</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('CSS')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">CSS</a><span class="tech-item" th:unless="${tagItem}">CSS</span></th:block>
+                                    </div>
+                                </div>
+                                <div class="tech-cat">
+                                    <div class="tech-cat-head">
+                                        <span class="tech-cat-dot" style="background:var(--ab-green);"></span>
+                                        <span class="tech-cat-name">后端开发</span>
+                                        <i class="tech-cat-icon haofont hao-icon-gear"></i>
+                                    </div>
+                                    <div class="tech-items">
+                                        <th:block th:with="tagItem=${tagFinder.getByName('Node.js')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Node.js</a><span class="tech-item" th:unless="${tagItem}">Node.js</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('Go')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Go</a><span class="tech-item" th:unless="${tagItem}">Go</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('Python')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Python</a><span class="tech-item" th:unless="${tagItem}">Python</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('MySQL')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">MySQL</a><span class="tech-item" th:unless="${tagItem}">MySQL</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('Redis')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Redis</a><span class="tech-item" th:unless="${tagItem}">Redis</span></th:block>
+                                    </div>
+                                </div>
+                                <div class="tech-cat">
+                                    <div class="tech-cat-head">
+                                        <span class="tech-cat-dot" style="background:var(--ab-purple);"></span>
+                                        <span class="tech-cat-name">工具与框架</span>
+                                        <i class="tech-cat-icon haofont hao-icon-cube"></i>
+                                    </div>
+                                    <div class="tech-items">
+                                        <th:block th:with="tagItem=${tagFinder.getByName('Git')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Git</a><span class="tech-item" th:unless="${tagItem}">Git</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('Docker')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Docker</a><span class="tech-item" th:unless="${tagItem}">Docker</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('Vite')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Vite</a><span class="tech-item" th:unless="${tagItem}">Vite</span></th:block>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('Webpack')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Webpack</a><span class="tech-item" th:unless="${tagItem}">Webpack</span></th:block>
+                                    </div>
+                                </div>
+                                <div class="tech-cat">
+                                    <div class="tech-cat-head">
+                                        <span class="tech-cat-dot" style="background:var(--ab-teal);"></span>
+                                        <span class="tech-cat-name">正在学习</span>
+                                        <i class="tech-cat-icon haofont hao-icon-lightbulb"></i>
+                                    </div>
+                                    <div class="tech-items">
+                                        <th:block th:with="tagItem=${tagFinder.getByName('Rust')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">Rust</a><span class="tech-item" th:unless="${tagItem}">Rust</span></th:block>
+                                        <span class="tech-item">AI / LLM</span>
+                                        <th:block th:with="tagItem=${tagFinder.getByName('WebAssembly')}"><a class="tech-item" th:if="${tagItem}" th:href="@{${tagItem.status.permalink}}">WebAssembly</a><span class="tech-item" th:unless="${tagItem}">WebAssembly</span></th:block>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+
+                    <!-- 工作经历 -->
+                    <div class="ab-sec">
+                        <div class="ab-sec-head">
+                            <div class="ab-sec-icon"><i class="haofont hao-icon-calendar-days"></i></div>
+                            <h2 class="ab-sec-title">工作经历</h2>
+                            <span class="ab-sec-en">Experience</span>
+                        </div>
+                        <div class="ab-card">
+                            <div class="career-list">
+                                <th:block th:if="${theme.config.about?.careers != null and !#lists.isEmpty(theme.config.about.careers)}">
+                                    <div class="career-item" th:each="c : ${theme.config.about.careers}">
+                                        <div class="career-dot"></div>
+                                        <div class="career-date" th:text="${c.period}"></div>
+                                        <h3 class="career-role" th:text="${c.position}"></h3>
+                                        <div class="career-company">
+                                            <i class="haofont hao-icon-location-dot" style="font-size:.8rem;"></i>
+                                            <span th:text="${c.company}"></span>
+                                        </div>
+                                        <div class="career-desc" th:utext="${c.desc}"></div>
+                                    </div>
+                                </th:block>
+                                <th:block th:if="${theme.config.about?.careers == null or #lists.isEmpty(theme.config.about.careers)}">
+                                    <div class="career-item">
+                                        <div class="career-dot"></div>
+                                        <div class="career-date">至今</div>
+                                        <h3 class="career-role">软件工程师</h3>
+                                        <div class="career-company">
+                                            <i class="haofont hao-icon-location-dot" style="font-size:.8rem;"></i>
+                                            <span>在「写代码」和「删代码」之间反复横跳</span>
+                                        </div>
+                                        <div class="career-desc">
+                                            <ul>
+                                                <li>负责把产品需求翻译成浏览器能理解的语言，顺便处理浏览器的各种小脾气</li>
+                                                <li>日常与 Bug 斗智斗勇，胜率约 60%（乐观估计）</li>
+                                                <li>持续学习新技术，以防被后浪拍在沙滩上</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 个人项目 -->
+                    <div class="ab-sec" th:if="${theme.config.about?.projects != null and !#lists.isEmpty(theme.config.about.projects)}">
+                        <div class="ab-sec-head">
+                            <div class="ab-sec-icon"><i class="haofont hao-icon-rocket"></i></div>
+                            <h2 class="ab-sec-title">个人项目</h2>
+                            <span class="ab-sec-en">Projects</span>
+                        </div>
+                        <div class="projects-grid">
+                            <th:block th:each="p : ${theme.config.about.projects}">
+                                <a th:if="${!#strings.isEmpty(p.url)}" class="project-card" th:href="${p.url}" target="_blank" rel="noopener">
+                                    <div class="project-head">
+                                        <div class="project-icon"><i th:class="${!#strings.isEmpty(p.icon) ? p.icon : 'haofont hao-icon-folder-open'}"></i></div>
+                                        <div class="project-name" th:text="${p.name}"></div>
+                                        <span class="project-tag" th:if="${!#strings.isEmpty(p.tag)}" th:text="${p.tag}"></span>
+                                    </div>
+                                    <p class="project-desc" th:if="${!#strings.isEmpty(p.desc)}" th:text="${p.desc}"></p>
+                                </a>
+                                <div th:if="${#strings.isEmpty(p.url)}" class="project-card no-link">
+                                    <div class="project-head">
+                                        <div class="project-icon"><i th:class="${!#strings.isEmpty(p.icon) ? p.icon : 'haofont hao-icon-folder-open'}"></i></div>
+                                        <div class="project-name" th:text="${p.name}"></div>
+                                        <span class="project-tag" th:if="${!#strings.isEmpty(p.tag)}" th:text="${p.tag}"></span>
+                                    </div>
+                                    <p class="project-desc" th:if="${!#strings.isEmpty(p.desc)}" th:text="${p.desc}"></p>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+
+                    <!-- 兴趣爱好 -->
+                    <div class="ab-sec">
+                        <div class="ab-sec-head">
+                            <div class="ab-sec-icon" style="background:rgba(245,63,149,.1);color:var(--ab-pink);"><i class="haofont hao-icon-heartbeat"></i></div>
+                            <h2 class="ab-sec-title">兴趣爱好</h2>
+                            <span class="ab-sec-en">Interests</span>
+                        </div>
+                        <div class="interests-grid">
+                            <th:block th:if="${theme.config.about?.interests != null and !#lists.isEmpty(theme.config.about.interests)}">
+                                <span class="interest-item" th:each="i : ${theme.config.about.interests}">
+                                    <i th:if="${!#strings.isEmpty(i.icon)}" th:class="${i.icon}"></i>
+                                    <i th:if="${#strings.isEmpty(i.icon)}" class="haofont hao-icon-star"></i>
+                                    <span th:text="${i.name}"></span>
+                                </span>
+                            </th:block>
+                            <th:block th:if="${theme.config.about?.interests == null or #lists.isEmpty(theme.config.about.interests)}">
+                                <span class="interest-item"><i class="haofont hao-icon-tushu"></i> 技术阅读</span>
+                                <span class="interest-item"><i class="haofont hao-icon-music"></i> 听音乐</span>
+                                <span class="interest-item"><i class="haofont hao-icon-images"></i> 摄影</span>
+                                <span class="interest-item"><i class="haofont hao-icon-youxi"></i> 打游戏</span>
+                                <span class="interest-item"><i class="haofont hao-icon-dianying"></i> 看电影</span>
+                                <span class="interest-item"><i class="haofont hao-icon-shoe-prints"></i> 散步</span>
+                            </th:block>
+                        </div>
+                    </div>
+
+                    <!-- 座右铭 -->
+                    <div class="ab-sec">
+                        <div class="ab-sec-head">
+                            <div class="ab-sec-icon" style="background:rgba(123,97,255,.1);color:var(--ab-purple);"><i class="haofont hao-icon-dengpao"></i></div>
+                            <h2 class="ab-sec-title">座右铭</h2>
+                            <span class="ab-sec-en">Motto</span>
+                        </div>
+                        <div class="motto-card">
+                            <p class="motto-text" th:if="${!#strings.isEmpty(theme.config.about?.motto)}" th:text="${theme.config.about.motto}"></p>
+                            <p class="motto-text" th:if="${#strings.isEmpty(theme.config.about?.motto)}">技术的本质是解决问题，而不是炫技。最好的代码是那些能够优雅解决问题、易于理解和维护的代码。</p>
+                            <p class="motto-author" th:text="${!#strings.isEmpty(theme.config.sidebar?.profile?.profileName) ? theme.config.sidebar.profile.profileName : site.title}"></p>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-        
-        </main>
-        <!-- 底部 -->
-        <footer th:replace="~{modules/footer}"/>
-    
-
-
+        </div>
     </div>
+</main>
+<footer th:replace="~{modules/footer}"/>
+</div>
+</th:block>
 </th:block>
 </html>

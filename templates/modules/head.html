@@ -21,23 +21,6 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="${assets_link + '/css/cyberpunk-styles.css' + theme_version}">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        pixel: ['VT323', 'monospace']
-                    },
-                    colors: {
-                        'neon-blue': '#00f0ff',
-                        'neon-pink': '#ff2a6d',
-                        'neon-purple': '#d300c5',
-                    }
-                }
-            }
-        }
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style th:if="${theme.config.other.scrollbarLinearGradientEnable}">
         *::-webkit-scrollbar-thumb {
             background-color: var(--heo-main);
