@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{modules/layouts/layout :: layout(content = ~{::content}, htmlType = 'page', title = ${singlePage.spec.title} + ' | ' + ${site.title}, head = ~{::head})}">
+
+<th:block th:fragment="head">
+    <th:block th:replace="~{modules/common/open-graph :: open-graph(_title = ${singlePage.spec.title},
+                _permalink = ${singlePage.status.permalink},
+                _cover = ${singlePage.spec.cover},
+                _excerpt = '隐私政策 - 了解我们如何保护您的数据安全',
+                _type = 'website')}"></th:block>
+    <link rel="stylesheet" th:href="${assets_link + '/css/privacy.css' + theme_version}" data-pjax>
+</th:block>
+
+<th:block th:fragment="content">
+    <div class="page privacy-page" id="body-wrap">
+        <header class="not-top-img" id="page-header">
+            <nav th:replace="~{modules/nav :: nav(title = ${singlePage.spec.title})}"></nav>
+        </header>
+
+        <main class="layout hide-aside" id="content-inner">
+            <div id="page">
+                <div class="privacy-container" id="article-container">
+                    <section class="privacy-hero">
+                        <div class="privacy-hero-mark">
+                            <i class="haofont hao-icon-circle-check"></i>
+                        </div>
+                        <div class="privacy-hero-main">
+                            <p class="privacy-eyebrow">Privacy Policy</p>
+                            <h1 class="privacy-page-title">隐私与数据说明</h1>
+                            <p class="privacy-page-desc">
+                                本页说明本站会记录哪些信息、为什么需要它们，以及你可以怎样处理自己的数据。
+                            </p>
+                        </div>
+                        <div class="privacy-updated">
+                            <i class="haofont hao-icon-clock"></i>
+                            <span>最后更新</span>
+                            <b>2025-03-06</b>
+                        </div>
+                    </section>
+
+                    <section class="privacy-quick">
+                        <p><b>收集范围很小</b><span>只记录评论、联系、访问统计和安全防护所需的信息。</span></p>
+                        <p><b>不用作营销画像</b><span>不会把你的评论、邮箱或访问记录用于广告定向。</span></p>
+                        <p><b>可以联系处理</b><span>如需查看、修正或删除评论相关数据，可以联系站点管理员。</span></p>
+                    </section>
+
+                    <div class="privacy-content">
+                        <section class="privacy-section">
+                            <div class="privacy-section-head">
+                                <div class="privacy-section-icon"><i class="haofont hao-icon-message"></i></div>
+                                <h2 class="privacy-section-title">评论与联系信息</h2>
+                            </div>
+                            <div class="privacy-section-body">
+                                <p>
+                                    当你发表评论或主动联系本站时，可能会留下昵称、邮箱、站点地址、评论内容和发送给我的消息。这些信息只用于展示评论、识别评论归属、回复交流和处理你提出的问题。
+                                </p>
+                                <div class="privacy-note">
+                                    <i class="haofont hao-icon-circle-info"></i>
+                                    <span>如果你不希望邮箱被用于回复提醒，可以不填写邮箱，或联系站点管理员删除对应评论信息。</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="privacy-section">
+                            <div class="privacy-section-head">
+                                <div class="privacy-section-icon"><i class="haofont hao-icon-gear"></i></div>
+                                <h2 class="privacy-section-title">访问日志与统计</h2>
+                            </div>
+                            <div class="privacy-section-body">
+                                <p>
+                                    为了让站点稳定运行，服务器和统计工具可能会记录访问时间、请求路径、IP、浏览器和设备信息。这些信息主要用于排查故障、识别异常访问和了解内容访问情况。
+                                </p>
+                                <ul class="privacy-list">
+                                    <li><i class="haofont hao-icon-circle-check"></i><span>访问统计只用于站点维护和内容观察。</span></li>
+                                    <li><i class="haofont hao-icon-circle-check"></i><span>不会基于这些记录向你投放广告或做营销画像。</span></li>
+                                    <li><i class="haofont hao-icon-circle-check"></i><span>日志会按服务器和安全策略定期清理。</span></li>
+                                </ul>
+                            </div>
+                        </section>
+
+                        <section class="privacy-section">
+                            <div class="privacy-section-head">
+                                <div class="privacy-section-icon"><i class="haofont hao-icon-link"></i></div>
+                                <h2 class="privacy-section-title">Cookie 与本地存储</h2>
+                            </div>
+                            <div class="privacy-section-body">
+                                <p>
+                                    本站可能通过 Cookie 或浏览器本地存储保存主题偏好、登录状态、评论状态或其他必要的页面设置。这些数据通常保存在你的浏览器中，用于改善再次访问时的体验。
+                                </p>
+                                <p>
+                                    你可以在浏览器中清除这些数据。清除后，部分偏好设置可能会恢复默认状态。
+                                </p>
+                            </div>
+                        </section>
+
+                        <section class="privacy-section">
+                            <div class="privacy-section-head">
+                                <div class="privacy-section-icon"><i class="haofont hao-icon-lightbulb"></i></div>
+                                <h2 class="privacy-section-title">第三方服务</h2>
+                            </div>
+                            <div class="privacy-section-body">
+                                <p>
+                                    本站可能使用托管、CDN、评论、统计或安全防护相关服务。第三方服务只会在提供对应功能时处理必要数据，具体范围以当前站点实际启用的服务为准。
+                                </p>
+                                <div class="privacy-service-list">
+                                    <div class="privacy-service-item">
+                                        <span>站点托管 / CDN</span>
+                                        <p>用于让页面更稳定地加载，可能处理访问 IP、请求路径和设备信息。</p>
+                                    </div>
+                                    <div class="privacy-service-item">
+                                        <span>评论系统</span>
+                                        <p>用于保存和展示你主动提交的评论内容及相关身份字段。</p>
+                                    </div>
+                                    <div class="privacy-service-item">
+                                        <span>访问统计</span>
+                                        <p>如果启用，仅用于了解内容访问情况，不用于广告画像或营销推送。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="privacy-section">
+                            <div class="privacy-section-head">
+                                <div class="privacy-section-icon"><i class="haofont hao-icon-zhanghao1"></i></div>
+                                <h2 class="privacy-section-title">数据保留与删除</h2>
+                            </div>
+                            <div class="privacy-section-body">
+                                <ul class="privacy-list">
+                                    <li><i class="haofont hao-icon-message"></i><span>评论会保留到你或站点管理员主动删除为止。</span></li>
+                                    <li><i class="haofont hao-icon-clock"></i><span>访问日志会按服务器和安全策略定期清理。</span></li>
+                                    <li><i class="haofont hao-icon-bianji"></i><span>如果你需要查看、修正或删除与自己相关的数据，可以联系站点管理员处理。</span></li>
+                                </ul>
+                            </div>
+                        </section>
+
+                        <section class="privacy-section">
+                            <div class="privacy-section-head">
+                                <div class="privacy-section-icon"><i class="haofont hao-icon-history"></i></div>
+                                <h2 class="privacy-section-title">政策更新</h2>
+                            </div>
+                            <div class="privacy-section-body">
+                                <p>
+                                    本说明可能会根据站点功能、服务提供方或法规要求进行调整。更新后会在页面顶部标注最新更新时间，重大变化会尽量通过站内可见位置提示。
+                                </p>
+                            </div>
+                        </section>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <footer th:replace="~{modules/footer}" />
+
+        <script data-pjax th:inline="javascript">
+            (function () {
+                const cssPath = /*[[${assets_link + '/css/privacy.css' + theme_version}]]*/ '/assets/css/privacy.css';
+                const existing = Array.from(document.getElementsByTagName('link')).find(function (link) {
+                    return link.href && link.href.includes('/css/privacy.css');
+                });
+                if (existing) {
+                    if (!existing.href.includes(cssPath)) {
+                        existing.href = cssPath;
+                    }
+                } else {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = cssPath;
+                    link.setAttribute('data-pjax', '');
+                    document.head.appendChild(link);
+                }
+            })();
+        </script>
+    </div>
+</th:block>
+
+</html>
