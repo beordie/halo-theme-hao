@@ -37,24 +37,31 @@
          th:with="currentUser = ${contributorFinder.getContributor(#authentication.name)}">
         <span class="site-page nav-login">
             <i sec:authorize="isAnonymous()" class="haofont hao-icon-zhanghao1 " style="font-size: 19.5px;"></i>
-            <img sec:authorize="isAuthenticated()"  th:src="${currentUser.avatar}"
-                 th:alt="${currentUser.displayName}"
-                 style=" width: 24px; height: 24px; border-radius: 9999px" />
+            <th:block sec:authorize="isAuthenticated()">
+                <i th:if="${currentUser.avatar == null or currentUser.avatar.isEmpty()}" class="haofont hao-icon-zhanghao1" style="font-size: 19.5px;"></i>
+                <img th:if="${currentUser.avatar != null and !currentUser.avatar.isEmpty()}" th:src="${currentUser.avatar}"
+                     th:alt="${currentUser.displayName}"
+                     onerror="this.style.display='none';this.previousElementSibling.style.display='inline-block';"
+                     style="width: 24px; height: 24px; border-radius: 9999px;" />
+            </th:block>
         </span>
         <div class="back-menu-list-groups">
             <div class="back-menu-list-group" style="margin: -4px -9px -4px -18px">
                 <div class="back-menu-list">
                     <th:block sec:authorize="isAuthenticated()">
                         <a class="back-menu-item" rel="external nofollow" target="_blank" href="/console">
+                            <i class="haofont hao-icon-apps-fill" style="margin-right:8px;font-size:15px;"></i>
                             <span class="back-menu-item-text">控制台</span>
                         </a>
                         <a class="back-menu-item" rel="external nofollow" href="/logout">
+                            <i class="haofont hao-icon-sign-out-alt" style="margin-right:8px;font-size:15px;"></i>
                             <span class="back-menu-item-text">退出登录</span>
                         </a>
                     </th:block>
                     <a sec:authorize="isAnonymous()" class="back-menu-item" rel="external nofollow" target="_blank"
                        href="/login"
                        onclick="this.href = '/login?redirect_uri=' + encodeURIComponent(window.location.href)">
+                        <i class="haofont hao-icon-zhanghao1" style="margin-right:8px;font-size:15px;"></i>
                         <span class="back-menu-item-text">登录</span>
                     </a>
                 </div>
@@ -62,9 +69,9 @@
         </div>
     </div>
     <div th:if="${theme.config.nav.right.console.consoleEnable}" class="nav-button" id="nav-console" title="显示中控台">
-        <a class="console_switchbutton" href="javascript:void(0);" onclick="heo.showConsole()" rel="external nofollow"
+        <a class="site-page" href="javascript:void(0);" onclick="heo.showConsole()" rel="external nofollow"
            title="显示中控台">
-            <i class="haofont hao-icon-dashboard"></i>
+            <i class="haofont hao-icon-apps-fill" style="font-size: 1.15rem;"></i>
         </a>
     </div>
 

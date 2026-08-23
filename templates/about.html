@@ -145,7 +145,7 @@
         position: sticky;
         top: 80px;
         align-self: flex-start;
-        text-align: center;
+        text-align: left;
         overflow: hidden;
     }
 
@@ -167,7 +167,21 @@
         margin-top: -40px;
         position: relative;
         z-index: 2;
+        display: flex;
+        justify-content: flex-start;
+        width: fit-content;
     }
+
+    .custom-about-page .avatar-ring {
+        position: absolute;
+        inset: -6px;
+        border-radius: 50%;
+        border: 2px dashed var(--ab-primary);
+        opacity: .4;
+        animation: avatar-spin 20s linear infinite;
+        pointer-events: none;
+    }
+    @keyframes avatar-spin { to { transform: rotate(360deg); } }
 
     .custom-about-page .avatar {
         width: 80px;
@@ -175,17 +189,21 @@
         border-radius: 50%;
         object-fit: cover;
         border: 4px solid var(--ab-card);
-        box-shadow: 0 2px 12px rgba(0,0,0,.08);
+        box-shadow: 0 4px 16px rgba(0,0,0,.1);
         transition: transform .4s var(--ease);
+        display: block;
+        margin: 0;
+        position: relative;
+        z-index: 1;
     }
     .custom-about-page .avatar:hover {
-        transform: scale(1.05);
+        transform: scale(1.08) rotate(3deg);
     }
 
     .custom-about-page .profile-name {
-        font-size: 1.25rem;
+        font-size: 1.3rem;
         font-weight: 700;
-        margin: 12px 0 4px;
+        margin: 14px 0 6px;
         color: var(--ab-gray-800);
         letter-spacing: -0.3px;
     }
@@ -194,13 +212,13 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         font-weight: 500;
         color: var(--ab-primary);
         background: var(--ab-primary-op);
         padding: 3px 10px;
         border-radius: 999px;
-        margin-bottom: 12px;
+        margin-bottom: 14px;
     }
     .custom-about-page .profile-dot {
         width: 5px; height: 5px;
@@ -219,60 +237,66 @@
     .custom-about-page .blog-stats {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 2px;
-        padding: 14px 0;
+        gap: 4px;
+        padding: 16px 0;
         border-top: 1px solid var(--ab-gray-50);
         border-bottom: 1px solid var(--ab-gray-50);
-        margin-bottom: 16px;
+        margin-bottom: 18px;
     }
     .custom-about-page .stat-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 4px 2px;
-        border-radius: 8px;
+        padding: 6px 2px;
+        border-radius: 10px;
         transition: background .2s;
     }
     .custom-about-page .stat-item:hover {
         background: var(--ab-gray-50);
     }
     .custom-about-page .stat-num {
-        font-size: 1.05rem;
-        font-weight: 700;
+        font-size: 1.15rem;
+        font-weight: 800;
         color: var(--ab-gray-800);
         line-height: 1.2;
         font-variant-numeric: tabular-nums;
+        background: linear-gradient(135deg, var(--ab-gray-800), var(--ab-primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
     .custom-about-page .stat-label {
-        font-size: 0.68rem;
+        font-size: 0.66rem;
         color: var(--ab-gray-400);
-        margin-top: 2px;
+        margin-top: 4px;
+        font-weight: 500;
     }
 
     /* Social */
     .custom-about-page .social-links {
         display: flex;
         justify-content: center;
-        gap: 6px;
-        margin-bottom: 14px;
+        gap: 8px;
+        margin-bottom: 18px;
         flex-wrap: wrap;
     }
     .custom-about-page .social-links a {
-        width: 34px;
-        height: 34px;
-        border-radius: 9px;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
         background: var(--ab-gray-50);
         display: grid;
         place-items: center;
-        color: var(--ab-gray-400);
-        transition: all .2s var(--ease);
+        color: var(--ab-gray-500);
+        transition: all .25s var(--ease);
         text-decoration: none;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
     }
     .custom-about-page .social-links a:hover {
         background: var(--ab-primary);
         color: #fff;
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px -2px var(--ab-primary-op);
     }
 
     /* Contact btn */
@@ -282,8 +306,8 @@
         justify-content: center;
         gap: 6px;
         width: 100%;
-        padding: 9px 0;
-        border-radius: 10px;
+        padding: 10px 0;
+        border-radius: 12px;
         background: linear-gradient(135deg, var(--ab-primary), var(--ab-purple));
         color: #fff;
         font-size: 0.82rem;
@@ -293,15 +317,15 @@
         border: none;
     }
     .custom-about-page .contact-btn:hover {
-        opacity: .9;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px -4px var(--ab-primary-op);
+        opacity: .92;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px -4px var(--ab-primary-op);
         color: #fff;
     }
 
     .custom-about-page .action-row {
         display: flex;
-        gap: 8px;
+        gap: 10px;
         width: 100%;
     }
     .custom-about-page .action-row > * {
@@ -313,28 +337,28 @@
         align-items: center;
         justify-content: center;
         gap: 6px;
-        padding: 9px 0;
-        border-radius: 10px;
+        padding: 10px 0;
+        border-radius: 12px;
         background: transparent;
         color: var(--ab-orange);
         font-size: 0.82rem;
         font-weight: 500;
         text-decoration: none;
         transition: all .25s var(--ease);
-        border: 1px solid var(--ab-orange);
+        border: 1.5px solid var(--ab-orange);
         cursor: pointer;
     }
     .custom-about-page .reward-btn:hover {
         background: var(--ab-orange);
         color: #fff;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px -4px rgba(247,114,52,.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px -4px rgba(247,114,52,.3);
     }
 
     /* Skills mini in profile */
     .custom-about-page .profile-skills {
-        margin-top: 16px;
-        padding-top: 16px;
+        margin-top: 18px;
+        padding-top: 18px;
         border-top: 1px solid var(--ab-gray-50);
     }
     .custom-about-page .profile-skills-label {
@@ -344,18 +368,28 @@
         letter-spacing: 1.2px;
         margin-bottom: 10px;
         font-weight: 600;
-        text-align: center;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .custom-about-page .profile-skills-label::before {
+        content: '';
+        width: 3px;
+        height: 12px;
+        border-radius: 2px;
+        background: linear-gradient(180deg, var(--ab-primary), var(--ab-purple));
     }
     .custom-about-page .skill-tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 5px;
-        justify-content: center;
+        gap: 6px;
+        justify-content: flex-start;
     }
     .custom-about-page .skill-tag {
-        padding: 3px 9px;
+        padding: 4px 10px;
         background: var(--ab-gray-50);
-        border-radius: 5px;
+        border-radius: 6px;
         font-size: 0.72rem;
         font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
         color: var(--ab-gray-600);
@@ -368,6 +402,7 @@
         background: var(--ab-primary);
         color: #fff;
         transform: translateY(-1px);
+        box-shadow: 0 2px 8px -2px var(--ab-primary-op);
     }
 
     /* ===== Right column ===== */
@@ -753,6 +788,7 @@
                 <aside class="profile-card ab-card">
                     <div class="profile-cover"></div>
                     <div class="avatar-wrap">
+                        <div class="avatar-ring"></div>
                         <img class="avatar"
                              th:src="${!#strings.isEmpty(theme.config.about?.aboutAuthorImage) ? theme.config.about.aboutAuthorImage : site.logo}"
                              alt="avatar">

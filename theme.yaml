@@ -39,6 +39,10 @@ spec:
         description: 最近评论页面
         screenshot:
         file: new_comment.html
+      - name: 朋友圈页面模版
+        description: 友链朋友圈文章流
+        screenshot:
+        file: friends.html
       - name: 隐私政策页面模版
         description: 隐私政策页面
         screenshot:

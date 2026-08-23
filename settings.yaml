@@ -1957,6 +1957,11 @@ spec:
           label: 友链每页数量
           help: "填写每页（滚动加载）展示的友链数量,"
           value: 12
+        - $formkit: url
+          name: fmomentsApiUrl
+          label: 朋友圈API地址
+          help: "友链朋友圈文章API接口地址，默认使用友链朋友圈插件接口"
+          value: "/apis/api.friend.moony.la/v1alpha1/friendposts"
 
 
     - group: photos

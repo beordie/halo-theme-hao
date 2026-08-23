@@ -574,46 +574,64 @@ if (typeof window.FriendMomentsApp === 'undefined') {
             this.updateLoadingStatus();
         }
 
+        escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
         createArticleElement(article) {
             const articleEl = document.createElement('article');
             articleEl.className = 'fMomentsArticleItem';
 
-            const safeLogoUrl = article.logo || window.fmomentsConfig?.errorImg || '/default-avatar.png';
+            const defaultAvatar = window.fmomentsConfig?.errorImg || '/themes/theme-hao/assets/images/404.gif';
+            const safeLogoUrl = article.logo || defaultAvatar;
             const safeAuthorUrl = article.authorUrl || '#';
             const safePostLink = article.postLink || '#';
 
+            const escAuthor = this.escapeHtml(article.author);
+            const escTitle = this.escapeHtml(article.title);
+            const escDesc = this.escapeHtml(article.description || '');
             const pubDateStr = article.pubDate.toLocaleDateString('zh-CN');
-            const pubTimeStr = article.pubDate.toLocaleTimeString('zh-CN', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
 
             articleEl.innerHTML = `
         <div class="fMomentsArticleHeader">
-            <img class="fMomentsAvatar" src="${safeLogoUrl}" alt="${article.author}" 
-                 onerror="this.src='${window.fmomentsConfig?.errorImg || '/default-avatar.png'}'">
-            <a href="${safeAuthorUrl}" target="_blank" rel="noopener nofollow" 
-                   style="color: var(--heo-main); text-decoration: none;"><div class="fMomentsAuthorInfo">
-                <div class="fMomentsAuthorName">${article.author}</div>
-                <div class="fMomentsPublishTime">${pubTimeStr}</div>
-            </div></a>
-            
+            <img class="fMomentsAvatar" src="${safeLogoUrl}" alt="${escAuthor}"
+                 onerror="this.src='${defaultAvatar}'">
+            <a href="${safeAuthorUrl}" target="_blank" rel="noopener nofollow" style="flex:1;min-width:0;color:inherit;text-decoration:none;">
+                <div class="fMomentsAuthorInfo">
+                    <div class="fMomentsAuthorName">${escAuthor}</div>
+                    <div class="fMomentsPublishTime"><i class="haofont hao-icon-clock"></i> ${this.formatTimeAgo(article.pubDate)}</div>
+                </div>
+            </a>
         </div>
-        
+
         <div class="fMomentsArticleContent">
-            <a class="fMomentsArticleTitle" href="${safePostLink}" target="_blank" rel="noopener nofollow" 
-               title="${article.title}">${article.title}</a>
-            <a class="fMomentsArticleTitle" href="${safePostLink}" target="_blank" rel="noopener nofollow" 
-               title="${article.title}"><div class="fMomentsArticleDescription">${article.description}</div></a>
+            <a class="fMomentsArticleTitle" href="${safePostLink}" target="_blank" rel="noopener nofollow" title="${escTitle}">${escTitle}</a>
+            <div class="fMomentsArticleDescription">${escDesc}</div>
         </div>
-        
+
         <div class="fMomentsArticleFooter">
-            <span>📅 ${pubDateStr}</span>
-            <span>🌐 <a href="${safeAuthorUrl}" target="_blank" rel="noopener nofollow">${article.author}</a></span>
+            <span><i class="haofont hao-icon-calendar-days"></i> ${pubDateStr}</span>
+            <a href="${safePostLink}" target="_blank" rel="noopener nofollow">阅读原文 <i class="haofont hao-icon-angle-right"></i></a>
         </div>
     `;
 
             return articleEl;
+        }
+
+        formatTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            if (minutes < 1) return '刚刚';
+            if (minutes < 60) return minutes + '分钟前';
+            if (hours < 24) return hours + '小时前';
+            if (days < 7) return days + '天前';
+            return date.toLocaleDateString('zh-CN');
         }
 
         updateDisplayStatus() {
