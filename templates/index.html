@@ -7,10 +7,11 @@
                 _cover = ${theme.config.other.opengraph.image},
                 _excerpt = ${site.seo.description},
                 _type = 'website')}"></th:block>
+    <link rel="stylesheet" th:href="${assets_link + '/css/home-hero.css' + theme_version}" data-pjax>
 </th:block>
 <th:block th:fragment="content">
-    
-    <div class="page" id="body-wrap"
+
+    <div class="page home-hero-layout" id="body-wrap"
          th:classappend="${theme.config.top.homePortal == null or theme.config.top.homePortal.compactMobileTop ? ' home-compact-mobile' : ''}">
         <div id="home-portal" class="home-portal" aria-hidden="true"
              th:if="${theme.config.top.homePortal == null or theme.config.top.homePortal.enable}">
@@ -70,36 +71,74 @@
                 })();
             </script>
         </div>
-        <!-- 头部导航栏 -->
-        <header th:class="${theme.config.top.above.enable_above and !(theme.config.top.homePortal == null or (theme.config.top.homePortal.enable and theme.config.top.homePortal.hideAboveWhenPortal)) ? 'full_page' : 'not-top-img'}" id="page-header">
+
+        <header class="not-top-img" id="page-header">
             <nav th:replace="~{modules/nav :: nav(title = ${siteTitle})}"></nav>
-            <!-- 问候语 -->
-            <th:block th:replace="~{modules/header/greeting}"/>
-            <!-- 第一屏 -->
-            <th:block th:if="${!(theme.config.top.homePortal == null or (theme.config.top.homePortal.enable and theme.config.top.homePortal.hideAboveWhenPortal))}"
-                      th:replace="~{modules/header/index-img}"/>
         </header>
-        <!-- 页面主体内容 -->
-        <div class="page">
-            <div id="home_top">
-                <!-- 每日说说 -->
-                <div th:replace="~{modules/moment}"/>
-                <!-- 置顶内容 -->
-                <div th:replace="~{modules/recent-top}"/>
-            </div>
-            <main class="layout" id="content-inner" th:classappend="${theme.config.sidebar.location}">
-                <div class="recent-posts" id="recent-posts">
-                    
-                    <!-- 分类导航栏 -->
-                    <div th:replace="~{'modules/bar/' + ${theme.config.layout.navs.nav}}"></div>
-                    
-                    <th:block th:replace="~{modules/post-list}"/>
-                
+
+        <section class="home-hero" id="home-hero"
+                 th:with="profileName=${#strings.isEmpty(theme.config.sidebar.profile.profileName) ? site.title : theme.config.sidebar.profile.profileName},
+                          profileIdentity=${theme.config.sidebar.profile.profileIdentity},
+                          profileDesc=${theme.config.sidebar.profile.profileDesc},
+                          heroTitle=${#strings.isEmpty(theme.config.top.homePortal?.title) ? 'Building solutions. Sharing knowledge.' : theme.config.top.homePortal.title},
+                          heroSubtitle=${#strings.isEmpty(theme.config.top.homePortal?.subtitle) ? '后端工程 · AI 工具 · 系统设计 · 生活观察' : theme.config.top.homePortal.subtitle}">
+            <div class="home-hero__left">
+                <div class="home-hero__eyebrow">
+                    <span class="home-hero__dot"></span>
+                    <span th:text="${site.title}">Blog</span>
                 </div>
-                <div th:replace="~{modules/aside :: aside(${theme.config.sidebar.widgetss.indexWidget})}"></div>
-            </main>
-        </div>
-        <!-- 底部 -->
+                <h1 class="home-hero__title">
+                    <span th:text="${heroTitle}">Building solutions. Sharing knowledge.</span><span class="home-hero__cursor">_</span>
+                </h1>
+                <p class="home-hero__desc" th:if="${not #strings.isEmpty(profileDesc)}" th:utext="${profileDesc}"></p>
+                <p class="home-hero__desc" th:if="${#strings.isEmpty(profileDesc)}" th:text="${heroSubtitle}"></p>
+                <div class="home-hero__actions">
+                    <a class="home-hero__btn home-hero__btn--primary" href="/archives">
+                        <span>浏览文章</span>
+                        <i class="haofont hao-icon-arrow-right"></i>
+                    </a>
+                    <a class="home-hero__btn home-hero__btn--ghost" href="/about">
+                        <span>关于我</span>
+                        <i class="haofont hao-icon-user"></i>
+                    </a>
+                </div>
+                <div class="home-hero__moment" th:replace="~{modules/moment}"/>
+            </div>
+            <div class="home-hero__right">
+                <div class="home-hero__code">
+                    <div class="home-hero__code-dots">
+                        <span></span><span></span><span></span>
+                        <span class="home-hero__code-lang">~/about.js</span>
+                    </div>
+                    <pre class="home-hero__code-body"><code><span class="hkc-k">const</span> <span class="hkc-v">author</span> = {
+  <span class="hkc-p">name</span>: <span class="hkc-s">"<th:block th:text="${profileName}">Author</th:block>"</span><th:block th:if="${not #strings.isEmpty(profileIdentity)}">,
+  <span class="hkc-p">role</span>: <span class="hkc-s">"<th:block th:text="${profileIdentity}">Developer</th:block>"</span></th:block>,
+  <span class="hkc-p">stack</span>: [<span class="hkc-s">"Java"</span>, <span class="hkc-s">"Go"</span>, <span class="hkc-s">"Python"</span>, <span class="hkc-s">"AI"</span>],
+  <span class="hkc-p">focus</span>: [<span class="hkc-s">"后端工程"</span>, <span class="hkc-s">"系统设计"</span>, <span class="hkc-s">"AI 工具"</span>],
+  <span class="hkc-p">status</span>: <span class="hkc-s">"writing"</span>
+};
+
+<span class="hkc-k">function</span> <span class="hkc-f">share</span>(topic) {
+  <span class="hkc-k">return</span> <span class="hkc-s">`Writing about ${topic}...`</span>;
+}
+
+<span class="hkc-c">// 把问题写清楚，把答案留给时间。</span></code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="home-content" id="home-content">
+            <div class="home-content__main">
+                <div class="home-content__heading">
+                    <h2>最新文章</h2>
+                </div>
+                <div class="recent-posts" id="recent-posts">
+                    <th:block th:replace="~{modules/post-list}"/>
+                </div>
+            </div>
+            <aside class="home-content__side aside-content" id="aside-content" th:replace="~{modules/aside :: aside(${theme.config.sidebar.widgetss.indexWidget})}"></aside>
+        </section>
+
         <footer th:replace="~{modules/footer}"/>
     </div>
 

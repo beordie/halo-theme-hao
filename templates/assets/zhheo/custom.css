@@ -3,6 +3,42 @@ code[class*=" language-"], pre[class*=" language-"]{
     background: #18171d;
 }
 
+/* 站点 Logo */
+#nav #site-name {
+    display: inline-flex;
+    align-items: center;
+    text-shadow: none !important;
+    overflow: visible !important;
+    background: transparent !important;
+}
+
+#nav #site-name .site-logo {
+    height: 32px;
+    width: 32px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+#nav #site-name:hover .site-logo {
+    transform: scale(1.08);
+}
+
+#nav #site-name:after {
+    display: none !important;
+}
+
+#nav #site-name:hover {
+    background: transparent !important;
+    color: inherit !important;
+}
+
+#nav #site-name i,
+#nav #site-name span {
+    display: none !important;
+}
+
 /* banner 字体图标大小及位置 */
 i.haofont.hao-icon-arrow-right.banner-righticon{
     font-size: 80px;

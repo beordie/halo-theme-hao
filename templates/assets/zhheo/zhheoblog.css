@@ -20403,3 +20403,135 @@ html.home-portal-visible body {
     }
 }
 
+/* 首页视觉统一：降低卡片与背景割裂感 */
+body[data-type=index] {
+    background:
+        radial-gradient(circle at 8% 0%, rgba(66, 90, 239, .055), transparent 28rem),
+        linear-gradient(180deg, #f9fbff 0%, var(--heo-background) 36rem);
+}
+
+[data-theme=dark] body[data-type=index] {
+    background:
+        radial-gradient(circle at 8% 0%, rgba(255, 200, 72, .075), transparent 28rem),
+        linear-gradient(180deg, #1a1a20 0%, var(--heo-background) 36rem);
+}
+
+body[data-type=index] #web_bg {
+    background: transparent;
+}
+
+body[data-type=index] #home_top,
+body[data-type=index] .layout#content-inner {
+    position: relative;
+}
+
+@media screen and (min-width: 769px) {
+    body[data-type=index] #home_top {
+        margin-top: .75rem;
+        padding: 0 1.5rem;
+    }
+
+    body[data-type=index] .recent-top-post-group {
+        padding: .75rem;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: saturate(140%) blur(14px);
+        -webkit-backdrop-filter: saturate(140%) blur(14px);
+    }
+
+    [data-theme=dark] body[data-type=index] .recent-top-post-group {
+        background: transparent;
+        box-shadow: none;
+    }
+
+    body[data-type=index] div#bannerGroup,
+    body[data-type=index] .topGroup {
+        height: 320px;
+    }
+
+    body[data-type=index] div#banners,
+    body[data-type=index] .topGroup .todayCard,
+    body[data-type=index] .recent-post-top .recent-post-item,
+    body[data-type=index] #recent-posts > .recent-post-item,
+    body[data-type=index] #aside-content .card-widget {
+        border: 1px solid rgba(227, 232, 247, .68);
+        background: rgba(255, 255, 255, .74);
+        box-shadow: 0 10px 32px rgba(44, 45, 48, .055);
+    }
+
+    [data-theme=dark] body[data-type=index] div#banners,
+    [data-theme=dark] body[data-type=index] .topGroup .todayCard,
+    [data-theme=dark] body[data-type=index] .recent-post-top .recent-post-item,
+    [data-theme=dark] body[data-type=index] #recent-posts > .recent-post-item,
+    [data-theme=dark] body[data-type=index] #aside-content .card-widget {
+        border-color: rgba(61, 61, 63, .78);
+        background: rgba(29, 30, 34, .78);
+        box-shadow: 0 10px 32px rgba(0, 0, 0, .18);
+    }
+
+    body[data-type=index] div#banners,
+    body[data-type=index] .topGroup .todayCard {
+        border-radius: 14px;
+    }
+
+    body[data-type=index] .recent-post-top .recent-post-item,
+    body[data-type=index] #recent-posts > .recent-post-item,
+    body[data-type=index] #aside-content .card-widget {
+        border-radius: 12px;
+    }
+
+    body[data-type=index] #banners::before {
+        background:
+            linear-gradient(90deg, rgba(255, 255, 255, .82) 0%, rgba(255, 255, 255, .58) 43%, rgba(255, 255, 255, .16) 100%),
+            radial-gradient(circle at 18% 20%, rgba(66, 90, 239, .10), transparent 30%);
+    }
+
+    [data-theme=dark] body[data-type=index] #banners::before {
+        background:
+            linear-gradient(90deg, rgba(29, 30, 34, .86) 0%, rgba(29, 30, 34, .62) 45%, rgba(29, 30, 34, .18) 100%),
+            radial-gradient(circle at 18% 20%, rgba(255, 200, 72, .10), transparent 30%);
+    }
+
+    body[data-type=index] #banners .tags-group-all,
+    body[data-type=index] #banners .nowrapMove,
+    body[data-type=index] #banners .diagonalMove {
+        opacity: .52;
+    }
+
+    body[data-type=index] #banners .tags-group-icon,
+    body[data-type=index] #recent-posts > .recent-post-item,
+    body[data-type=index] #aside-content .card-widget.card-info {
+        box-shadow: none;
+    }
+
+    body[data-type=index] .topGroup .todayCard::after {
+        background:
+            linear-gradient(180deg, rgba(0, 0, 0, .05) 0%, rgba(0, 0, 0, .46) 100%),
+            linear-gradient(90deg, rgba(0, 0, 0, .48) 0%, rgba(0, 0, 0, .12) 58%, rgba(0, 0, 0, .28) 100%);
+    }
+
+    body[data-type=index] #recent-posts > .recent-post-item:hover,
+    body[data-type=index] #aside-content .card-widget:hover {
+        box-shadow: 0 14px 36px rgba(44, 45, 48, .075);
+    }
+
+    [data-theme=dark] body[data-type=index] #recent-posts > .recent-post-item:hover,
+    [data-theme=dark] body[data-type=index] #aside-content .card-widget:hover {
+        box-shadow: 0 14px 36px rgba(0, 0, 0, .22);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body[data-type=index] {
+        background: var(--heo-background);
+    }
+
+    body[data-type=index] .recent-post-top .recent-post-item,
+    body[data-type=index] #recent-posts > .recent-post-item,
+    body[data-type=index] #aside-content .card-widget {
+        box-shadow: none;
+    }
+}
+

@@ -18,6 +18,7 @@
         <main class="layout" id="content-inner" th:classappend="${theme.config.sidebar.location}">
             <div class="recent-posts" id="recent-posts">
                 <th:block th:replace="~{modules/post-list}"/>
+                <div th:replace="~{modules/widgets/page :: page('',${posts},true,'')}"></div>
             </div>
             <div th:replace="~{modules/aside :: aside(${theme.config.sidebar.widgetss.indexWidget})}"></div>
         </main>

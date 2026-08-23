@@ -1,7 +1,7 @@
-<th:block
+<th:block th:fragment="post-list"
         th:with='postItems=${posts.items},
           postRandomImg=${#strings.contains(theme.config.layout.postRandomImg,"?") ? theme.config.layout.postRandomImg+"&" : theme.config.layout.postRandomImg+"?"}'>
-    
+
     <!-- card，需要添加在没有图片时使用随机图片 -->
     <div class="recent-post-item"
          th:classappend="${theme.config.layout.post.cols} + ' ' +
@@ -43,7 +43,7 @@
                 </a>
                 <div class="content" th:text="${post.status.excerpt}"></div>
             </div>
-            
+
             <div class="article-meta-wrap">
                 <!-- tag -->
                 <th:block th:if="${not #lists.isEmpty(post.tags)}">
@@ -65,24 +65,9 @@
                           th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"
                           th:title="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}+创建">
                     </time>
-                    <!-- <time style="display: inline;"
-                          th:datetime="${post.spec.publishTime}"
-                          th:if="${days <= 30 && days > 0}"
-                          th:text="${days}+天前"
-                          th:title="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}+创建">
-                    </time>
-                    <time style="display: inline;"
-                          th:datetime="${post.spec.publishTime}"
-                          th:if="${days == 0}"
-                          th:text="最近"
-                          th:title="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}+创建">
-                    </time> -->
                 </span>
             </div>
         </div>
     </div>
-    
-    <!-- 分页 -->
-    <div th:replace="~{modules/widgets/page :: page('',${posts},true,'')}"></div>
 
 </th:block>

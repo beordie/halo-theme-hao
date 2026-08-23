@@ -1,6 +1,6 @@
 {
   "name": "halo-theme-hao",
-  "version": "1.4.15",
+  "version": "1.4.30",
   "devDependencies": {
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
