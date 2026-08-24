@@ -55,5 +55,5 @@ spec:
   repo: https://github.com/chengzhongxue/halo-theme-hao
   settingName: "theme-hao-setting"
   configMapName: "theme-hao-configMap"
-  version: "1.7.92"
+  version: "1.7.93"
   requires: ">=2.20.0"

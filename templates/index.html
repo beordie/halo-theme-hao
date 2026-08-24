@@ -15,22 +15,55 @@
          th:classappend="${theme.config.top.homePortal == null or theme.config.top.homePortal.compactMobileTop ? ' home-compact-mobile' : ''}">
         <div id="home-portal" class="home-portal" aria-hidden="true"
              th:if="${theme.config.top.homePortal == null or theme.config.top.homePortal.enable}">
-            <div class="home-portal__backdrop"></div>
-            <div class="home-portal__ripple"></div>
-            <div class="home-portal__wave"></div>
+            <div class="home-portal__bg"></div>
+            <div class="home-portal__grid"></div>
+            <div class="home-portal__glow"></div>
+            <div class="home-portal__particles">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="home-portal__ring home-portal__ring--outer"></div>
+            <div class="home-portal__ring home-portal__ring--mid"></div>
+            <div class="home-portal__ring home-portal__ring--inner"></div>
+            <div class="home-portal__corner home-portal__corner--tl"></div>
+            <div class="home-portal__corner home-portal__corner--tr"></div>
+            <div class="home-portal__corner home-portal__corner--bl"></div>
+            <div class="home-portal__corner home-portal__corner--br"></div>
+            <div class="home-portal__scanline"></div>
             <div class="home-portal__content">
-                <div class="home-portal__eyebrow" th:text="${site.title}">Halo</div>
-                <div class="home-portal__title"
-                     th:text="${#strings.isEmpty(theme.config.top.homePortal?.title) ? '把问题写清楚，把答案留给时间。' : theme.config.top.homePortal.title}">
-                    把问题写清楚，把答案留给时间。
+                <div class="home-portal__status">
+                    <span class="home-portal__status-dot"></span>
+                    <span class="home-portal__status-text">SYSTEM ONLINE</span>
+                    <span class="home-portal__status-sep"></span>
+                    <span class="home-portal__status-ver" id="portal-ver">v2.0.1</span>
                 </div>
-                <div class="home-portal__subtitle"
-                     th:text="${#strings.isEmpty(theme.config.top.homePortal?.subtitle) ? '后端工程 · AI 工具 · 系统设计 · 生活观察' : theme.config.top.homePortal.subtitle}">
-                    后端工程 · AI 工具 · 系统设计 · 生活观察
+                <div class="home-portal__eyebrow" th:text="${site.title}">HAO BLOG</div>
+                <h1 class="home-portal__title"
+                    th:attr="data-text=${#strings.isEmpty(theme.config.top.homePortal?.title) ? '把问题写清楚，把答案留给时间。' : theme.config.top.homePortal.title}"
+                    th:text="${#strings.isEmpty(theme.config.top.homePortal?.title) ? '把问题写清楚，把答案留给时间。' : theme.config.top.homePortal.title}">
+                    把问题写清楚，把答案留给时间。
+                </h1>
+                <div class="home-portal__subtitle-wrap">
+                    <div class="home-portal__subtitle-line"></div>
+                    <p class="home-portal__subtitle"
+                       th:text="${#strings.isEmpty(theme.config.top.homePortal?.subtitle) ? '后端工程 · AI 工具 · 系统设计 · 生活观察' : theme.config.top.homePortal.subtitle}">
+                        后端工程 · AI 工具 · 系统设计 · 生活观察
+                    </p>
+                    <div class="home-portal__subtitle-line"></div>
                 </div>
                 <button id="home-portal-enter" class="home-portal__button" type="button">
+                    <span class="home-portal__btn-bracket home-portal__btn-bracket--l">[</span>
                     <span th:text="${#strings.isEmpty(theme.config.top.homePortal?.buttonText) ? '进入博客' : theme.config.top.homePortal.buttonText}">进入博客</span>
+                    <span class="home-portal__btn-bracket home-portal__btn-bracket--r">]</span>
+                    <span class="home-portal__btn-caret">_</span>
                 </button>
+                <div class="home-portal__meta">
+                    <span>CPU 0.00%</span>
+                    <span>MEM 12.4MB</span>
+                    <span>NET CONNECTED</span>
+                    <span id="portal-time">--:--:--</span>
+                </div>
             </div>
             <script th:inline="javascript">
                 (() => {
@@ -38,9 +71,26 @@
                     const showOnceInSession = [[${theme.config.top.homePortal == null or theme.config.top.homePortal.showOnceInSession}]];
                     const portal = document.getElementById('home-portal');
                     const enter = document.getElementById('home-portal-enter');
+                    const timeEl = document.getElementById('portal-time');
+                    const verEl = document.getElementById('portal-ver');
                     if (!portal || !enter) return;
 
+                    if (verEl) {
+                        const v = 'v' + (Math.floor(Math.random()*3)+1) + '.' + Math.floor(Math.random()*9) + '.' + Math.floor(Math.random()*9);
+                        verEl.textContent = v;
+                    }
+
+                    const updateTime = () => {
+                        if (!timeEl) return;
+                        const d = new Date();
+                        const pad = n => String(n).padStart(2,'0');
+                        timeEl.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+                    };
+                    updateTime();
+                    const timer = setInterval(updateTime, 1000);
+
                     const closePortal = () => {
+                        clearInterval(timer);
                         document.documentElement.classList.remove('home-portal-visible');
                         portal.remove();
                     };
@@ -49,9 +99,7 @@
                         portal.classList.add('home-portal--launching');
                         portal.classList.add('home-portal--leaving');
                         if (showOnceInSession) {
-                            try {
-                                sessionStorage.setItem(portalKey, 'true');
-                            } catch (e) {}
+                            try { sessionStorage.setItem(portalKey, 'true'); } catch (e) {}
                         }
                         setTimeout(closePortal, 1850);
                     };
