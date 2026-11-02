@@ -1,0 +1,874 @@
+/* ============================================================
+   仓库页 · 终端 / IDE 风格（双主题：亮色默认 + 暗色夜间）
+   颜色全部变量化，暗色仅在 [data-theme="dark"] 下生效
+   只改 .repos-container 与卡片，不污染导航/页脚
+   ============================================================ */
+
+/* ============ 非颜色通用变量 ============ */
+.repos-page {
+    --repo-radius: 12px;
+    --repo-ease: cubic-bezier(.4, 0, .2, 1);
+    --repo-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+/* 布局：导航与内容同宽居中
+   注意：PJAX 只替换 #body-wrap 的 innerHTML，元素本身（含 class）不换，
+   所以不能用 .repos-page 做选择器——否则跳回首页后规则仍命中、扒掉首页 #page 样式。
+   改用 :has(.repos-container)，只在内容区真的有仓库容器时生效。 */
+#body-wrap:has(.repos-container) > main.layout.hide-aside#content-inner {
+    max-width: 1080px;
+}
+
+#body-wrap:has(.repos-container) > main.layout#content-inner > div#page {
+    width: 100%;
+    padding: 0;
+    overflow: visible;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    animation: none;
+}
+
+#body-wrap:has(.repos-container) #page-header #nav #nav-group {
+    max-width: 1080px;
+    margin: 0 auto;
+}
+
+/* ============ 亮色（默认，白天 · VS Code Light / GitHub Light 终端） ============ */
+#content-inner #article-container.repos-container {
+    --panel: #FFFFFF;
+    --panel-2: #F0F3F6;
+    --line: #D9E1EA;
+    --line-soft: #E6EBF0;
+    --accent: #0891B2;
+    --accent-rgb: 8, 145, 178;
+    --green: #1A7F37;
+    --green-rgb: 26, 127, 55;
+    --amber: #D97706;
+    --amber-rgb: 217, 119, 6;
+    --grad-blue: #2563EB;
+    --text: #1F2937;
+    --muted: #6B7785;
+    --muted-rgb: 107, 119, 133;
+    --faint: #94A3B8;
+    --dot-red: #FF5F57;
+    --dot-yellow: #FEBC2E;
+    --dot-green: #28C840;
+
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 8px 0 56px;
+    letter-spacing: normal;
+    color: var(--text);
+    background: transparent;
+}
+
+/* ============ 暗色（仅夜间开关生效） ============ */
+[data-theme="dark"] #content-inner #article-container.repos-container {
+    --panel: #11161D;
+    --panel-2: #0E1319;
+    --line: #1F2A36;
+    --line-soft: #18222C;
+    --accent: #22D3EE;
+    --accent-rgb: 34, 211, 238;
+    --green: #34D399;
+    --green-rgb: 52, 211, 153;
+    --amber: #FBBF24;
+    --amber-rgb: 251, 191, 36;
+    --grad-blue: #60A5FA;
+    --text: #D6E2EA;
+    --muted: #66788A;
+    --muted-rgb: 102, 120, 138;
+    --faint: #3C4C5C;
+    --dot-red: #FF5F57;
+    --dot-yellow: #FEBC2E;
+    --dot-green: #28C840;
+
+    background: transparent;
+}
+
+/* ============ Hero / 终端标题 ============ */
+#article-container .repos-hero {
+    margin-bottom: 26px;
+}
+
+#article-container .repos-page-title {
+    margin: 0;
+    padding: 0;
+    border: none;
+    color: var(--text);
+    font-family: var(--repo-mono);
+    font-size: 1.85rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    text-align: left;
+    text-shadow: 0 0 22px rgba(var(--accent-rgb), .28);
+}
+
+#article-container .repos-page-title::before {
+    content: '$ ';
+    color: var(--accent);
+    font-weight: 400;
+    text-shadow: 0 0 10px rgba(var(--accent-rgb), .7);
+}
+
+#article-container .repos-page-title::after {
+    content: '▋';
+    color: var(--accent);
+    margin-left: 2px;
+    text-shadow: 0 0 10px rgba(var(--accent-rgb), .7);
+    animation: repo-blink 1.1s steps(1) infinite;
+}
+
+@keyframes repo-blink {
+    50% { opacity: 0; }
+}
+
+#article-container .repos-page-desc {
+    max-width: 680px;
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-family: var(--repo-mono);
+    font-size: .85rem;
+    line-height: 1.8;
+    text-align: left;
+    letter-spacing: normal;
+}
+
+#article-container .repos-page-desc b,
+#article-container .repos-page-desc strong {
+    color: var(--accent);
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(var(--accent-rgb), .35);
+}
+
+#article-container .repos-page-desc a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color .2s var(--repo-ease), text-shadow .2s var(--repo-ease);
+}
+
+#article-container .repos-page-desc a:hover {
+    border-bottom-color: currentColor;
+    text-shadow: 0 0 8px rgba(var(--accent-rgb), .55);
+}
+
+#article-container .repos-page-desc code {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(var(--accent-rgb), .1);
+    color: var(--accent);
+    font-size: .85em;
+    font-family: var(--repo-mono);
+    border: 1px solid rgba(var(--accent-rgb), .2);
+}
+
+/* ============ Status bar ============ */
+#article-container .repos-statusbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding: 11px 18px;
+    border: 1px solid rgba(var(--accent-rgb), .4);
+    border-radius: 12px;
+    background: var(--panel);
+    font-family: var(--repo-mono);
+    font-size: .74rem;
+    color: var(--muted);
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    box-shadow:
+        0 0 0 1px rgba(var(--accent-rgb), .06),
+        0 0 16px -6px rgba(var(--accent-rgb), .25);
+}
+
+#article-container .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+    animation: repo-pulse 1.6s infinite;
+    flex-shrink: 0;
+}
+
+@keyframes repo-pulse {
+    50% { opacity: .35; }
+}
+
+#article-container .status-label {
+    color: var(--green);
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(var(--green-rgb), .55);
+}
+
+#article-container .status-sep {
+    width: 1px;
+    height: 12px;
+    background: rgba(var(--accent-rgb), .3);
+}
+
+#article-container .status-item em {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 4px;
+    text-shadow: 0 0 8px rgba(var(--accent-rgb), .4);
+}
+
+#article-container .status-item em.is-active {
+    color: var(--amber);
+    text-shadow: 0 0 8px rgba(var(--amber-rgb), .45);
+}
+
+#article-container .status-spacer {
+    flex: 1;
+}
+
+#article-container .status-sync {
+    color: var(--muted);
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+#article-container .status-sync.is-done {
+    color: var(--green);
+    text-shadow: 0 0 6px rgba(var(--green-rgb), .4);
+}
+
+#article-container a.status-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border: 1px solid rgba(var(--accent-rgb), .45);
+    border-radius: 999px;
+    color: var(--accent);
+    font-family: var(--repo-mono);
+    font-size: .72rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    transition: border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+#article-container a.status-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 12px -2px rgba(var(--accent-rgb), .55);
+}
+
+/* ============ Grid ============ */
+#article-container .repos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    align-items: start;
+    gap: 16px;
+}
+
+#article-container .repos-grid.is-few {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+#article-container .repos-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 80px 20px;
+    color: var(--muted);
+    text-align: center;
+    font-family: var(--repo-mono);
+    border: 1px dashed rgba(var(--accent-rgb), .3);
+    border-radius: 14px;
+}
+
+#article-container .repos-empty i {
+    font-size: 2.4rem;
+    color: var(--accent);
+    opacity: .6;
+    text-shadow: 0 0 14px rgba(var(--accent-rgb), .4);
+}
+
+#article-container .repos-empty p {
+    margin: 0;
+    letter-spacing: normal;
+    font-size: .85rem;
+}
+
+/* ============ Card · 霓虹卡 ============ */
+#article-container .repo-card-wrap {
+    position: relative;
+}
+
+#article-container a.repo-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    padding: 18px;
+    border: 1.5px solid rgba(var(--accent-rgb), .45);
+    border-radius: 14px;
+    background: var(--panel);
+    text-decoration: none;
+    color: var(--text);
+    font-family: var(--repo-mono);
+    box-shadow:
+        0 0 0 1px rgba(var(--accent-rgb), .08),
+        0 0 16px -6px rgba(var(--accent-rgb), .22);
+    transition: transform .25s var(--repo-ease), border-color .25s var(--repo-ease), box-shadow .25s var(--repo-ease);
+}
+
+/* 整个卡片区域（含 Star 按钮）作为整体 hover */
+#article-container .repo-card-wrap:hover .repo-card {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow:
+        0 0 0 1px rgba(var(--accent-rgb), .18),
+        0 0 24px -4px rgba(var(--accent-rgb), .45),
+        0 14px 36px -14px rgba(var(--accent-rgb), .3);
+}
+
+#article-container .repo-card-wrap:hover .repo-star-btn {
+    transform: translateY(-4px);
+}
+
+/* Star 按钮：卡片右下，hover 变金 */
+#article-container a.repo-star-btn {
+    position: absolute;
+    right: 16px;
+    bottom: 14px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--muted);
+    font-family: var(--repo-mono);
+    font-size: .74rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform .25s var(--repo-ease), color .2s var(--repo-ease), border-color .2s var(--repo-ease), box-shadow .2s var(--repo-ease);
+}
+
+#article-container a.repo-star-btn:hover {
+    color: var(--amber);
+    border-color: var(--amber);
+    box-shadow: 0 0 12px -2px rgba(var(--amber-rgb), .5);
+}
+
+#article-container a.repo-star-btn svg {
+    width: 13px;
+    height: 13px;
+}
+
+/* 标题行 */
+#article-container .repo-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 70px; /* 给 Star 按钮留位 */
+}
+
+#article-container .repo-bookmark {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: var(--accent);
+    filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), .65));
+}
+
+#article-container .repo-name {
+    min-width: 0;
+    flex: 1;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: linear-gradient(90deg, var(--grad-blue), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#article-container .repo-state-badges {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+#article-container .repo-pinned {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(var(--amber-rgb), .12);
+    color: var(--amber);
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .3px;
+    white-space: nowrap;
+}
+
+#article-container .repo-archived {
+    flex-shrink: 0;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--muted-rgb), .4);
+    color: var(--muted);
+    font-size: .64rem;
+    font-weight: 600;
+    letter-spacing: .6px;
+    white-space: nowrap;
+    opacity: .8;
+}
+
+/* 描述行：42px 缩略图 + 描述 */
+#article-container .repo-card-desc-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+#article-container .repo-thumb {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--panel-2), var(--line-soft));
+    border: 1px solid rgba(var(--accent-rgb), .35);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    overflow: hidden;
+    filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), .4));
+}
+
+#article-container .repo-thumb img {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    object-fit: cover;
+    border-radius: inherit;
+    display: block;
+}
+
+#article-container p.repo-desc {
+    margin: 0;
+    color: var(--muted);
+    font-size: .9rem;
+    line-height: 1.6;
+    text-align: left;
+    letter-spacing: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+#article-container .repo-homepage {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    color: var(--accent);
+    border: 1px solid rgba(var(--accent-rgb), .3);
+    background: var(--panel);
+    text-decoration: none;
+    transition: transform .25s var(--repo-ease), color .2s var(--repo-ease), border-color .2s var(--repo-ease), box-shadow .2s var(--repo-ease);
+}
+
+#article-container .repo-card-wrap:hover .repo-homepage {
+    transform: translateY(-4px);
+}
+
+#article-container .repo-homepage:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px -2px rgba(var(--accent-rgb), .5);
+}
+
+/* Topics 胶囊 */
+#article-container .repo-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+#article-container .repo-topic {
+    padding: 3px 11px;
+    border-radius: 999px;
+    background: rgba(var(--accent-rgb), .1);
+    border: 1px solid rgba(var(--accent-rgb), .25);
+    color: var(--accent);
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .3px;
+    white-space: nowrap;
+}
+
+/* 个人手记：代码注释式 */
+#article-container p.repo-card-note {
+    margin: -2px 0 0;
+    color: var(--green);
+    font-size: .76rem;
+    line-height: 1.6;
+    font-style: normal;
+    opacity: .9;
+    text-shadow: 0 0 6px rgba(var(--green-rgb), .35);
+}
+
+/* 底部行 */
+#article-container .repo-card-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 14px;
+    padding-right: 90px; /* 给 Star 按钮留位 */
+    border-top: 1px dashed rgba(var(--accent-rgb), .28);
+    font-size: .78rem;
+}
+
+#article-container .repo-lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#article-container .repo-lang-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    flex-shrink: 0;
+}
+
+#article-container .repo-lang-name {
+    color: var(--muted);
+    font-style: normal;
+    font-weight: 500;
+}
+
+#article-container .repo-pushed {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: .72rem;
+}
+
+#article-container .repo-pushed em {
+    font-style: normal;
+    font-weight: 500;
+}
+
+#article-container .repo-pushed .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    flex-shrink: 0;
+    animation: repo-pulse 1.6s infinite;
+}
+
+@keyframes repo-pulse {
+    50% { opacity: .35; }
+}
+
+#article-container .repo-meta-stars,
+#article-container .repo-meta-forks {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--amber);
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(var(--amber-rgb), .45);
+}
+
+#article-container .repo-meta-stars em,
+#article-container .repo-meta-forks em {
+    font-style: normal;
+}
+
+/* License：等宽描边 chip */
+#article-container .repo-license {
+    padding: 2px 9px;
+    border-radius: 6px;
+    border: 1px solid rgba(var(--muted-rgb), .35);
+    color: var(--muted);
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .4px;
+    white-space: nowrap;
+    font-family: var(--repo-mono);
+}
+
+/* Open issues */
+#article-container .repo-issues {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--muted);
+    font-size: .78rem;
+    font-weight: 500;
+}
+
+#article-container .repo-issues em {
+    font-style: normal;
+}
+
+/* 仓库体积 */
+#article-container .repo-size {
+    display: inline-flex;
+    align-items: center;
+    color: var(--muted);
+    font-size: .72rem;
+    font-weight: 500;
+}
+
+#article-container .repo-size em {
+    font-style: normal;
+    font-family: var(--repo-mono);
+}
+
+/* ============ 贡献热力图 ============ */
+#article-container .repos-heatmap {
+    margin-top: 28px;
+    padding: 18px;
+    border: 1px solid rgba(var(--accent-rgb), .4);
+    border-radius: 14px;
+    background: var(--panel);
+    box-shadow:
+        0 0 0 1px rgba(var(--accent-rgb), .06),
+        0 0 18px -6px rgba(var(--accent-rgb), .2);
+    font-family: var(--repo-mono);
+}
+
+#article-container .repos-heatmap-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+#article-container .repos-heatmap-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(var(--accent-rgb), .45);
+}
+
+#article-container .repos-heatmap-title i {
+    font-size: 1rem;
+}
+
+#article-container .repos-heatmap-total {
+    color: var(--muted);
+    font-size: .74rem;
+    letter-spacing: .3px;
+}
+
+#article-container .repos-heatmap-body {
+    overflow-x: auto;
+}
+
+#article-container .repos-heatmap-months {
+    display: grid;
+    gap: 3px;
+    margin-bottom: 6px;
+    margin-left: 32px;
+    color: var(--muted);
+    font-size: .66rem;
+    letter-spacing: .3px;
+}
+
+#article-container .repos-heatmap-months span {
+    white-space: nowrap;
+}
+
+#article-container .repos-heatmap-grid-wrap {
+    display: flex;
+    gap: 8px;
+}
+
+#article-container .repos-heatmap-days {
+    display: grid;
+    grid-template-rows: repeat(7, 1fr);
+    gap: 3px;
+    width: 26px;
+    flex-shrink: 0;
+    color: var(--muted);
+    font-size: .62rem;
+    line-height: 11px;
+    padding-top: 1px;
+}
+
+#article-container .repos-heatmap-days span:nth-child(1) { grid-row: 2; }
+#article-container .repos-heatmap-days span:nth-child(2) { grid-row: 4; }
+#article-container .repos-heatmap-days span:nth-child(3) { grid-row: 6; }
+
+#article-container .repos-heatmap-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(7, 1fr);
+    gap: 3px;
+}
+
+#article-container .heat-cell {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    background: rgba(var(--accent-rgb), .08);
+    transition: transform .15s ease, box-shadow .15s ease;
+    cursor: default;
+}
+
+#article-container .heat-cell[data-level="1"] {
+    background: rgba(var(--accent-rgb), .28);
+}
+#article-container .heat-cell[data-level="2"] {
+    background: rgba(var(--accent-rgb), .5);
+}
+#article-container .heat-cell[data-level="3"] {
+    background: rgba(var(--accent-rgb), .75);
+    box-shadow: 0 0 4px rgba(var(--accent-rgb), .5);
+}
+#article-container .heat-cell[data-level="4"] {
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(var(--accent-rgb), .8);
+}
+
+#article-container .heat-cell[data-count]:hover {
+    transform: scale(1.5);
+    z-index: 2;
+    position: relative;
+}
+
+#article-container .repos-heatmap-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: .62rem;
+    letter-spacing: .3px;
+}
+
+#article-container .heat-level {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+}
+#article-container .heat-level[data-level="0"] { background: rgba(var(--accent-rgb), .08); }
+#article-container .heat-level[data-level="1"] { background: rgba(var(--accent-rgb), .28); }
+#article-container .heat-level[data-level="2"] { background: rgba(var(--accent-rgb), .5); }
+#article-container .heat-level[data-level="3"] { background: rgba(var(--accent-rgb), .75); }
+#article-container .heat-level[data-level="4"] { background: var(--accent); box-shadow: 0 0 4px rgba(var(--accent-rgb), .7); }
+
+#article-container .repos-heatmap-tip {
+    margin: 12px 0 0;
+    color: var(--amber);
+    font-size: .72rem;
+    letter-spacing: .3px;
+}
+
+/* ============ States ============ */
+#article-container a.repo-card.is-loading .repo-desc {
+    color: transparent;
+    border-radius: 4px;
+    background: linear-gradient(90deg, rgba(var(--accent-rgb), .06) 25%, rgba(var(--accent-rgb), .16) 37%, rgba(var(--accent-rgb), .06) 63%);
+    background-size: 400% 100%;
+    animation: repo-shimmer 1.4s ease infinite;
+}
+
+#article-container a.repo-card.is-offline p.repo-desc {
+    color: var(--muted);
+}
+
+@keyframes repo-shimmer {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ============ Responsive ============ */
+@media (min-width: 1500px) {
+    #body-wrap:has(.repos-container) > main.layout.hide-aside#content-inner {
+        max-width: 1280px;
+    }
+
+    #content-inner #article-container.repos-container {
+        max-width: 1280px;
+    }
+
+    #body-wrap:has(.repos-container) #page-header #nav #nav-group {
+        max-width: 1280px;
+    }
+}
+
+@media (max-width: 768px) {
+    #content-inner #article-container.repos-container {
+        padding: 6px 0 40px;
+    }
+
+    #article-container .repos-page-title {
+        font-size: 1.35rem;
+    }
+
+    #article-container .repos-statusbar {
+        gap: 8px;
+        padding: 8px 12px;
+        font-size: .66rem;
+    }
+
+    #article-container .repos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #article-container .repos-grid.is-few {
+        max-width: none;
+    }
+
+    #article-container .repos-heatmap {
+        padding: 14px;
+    }
+
+    #article-container .heat-cell {
+        width: 9px;
+        height: 9px;
+    }
+}

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{modules/layouts/layout :: layout(content = ~{::content}, htmlType = 'page', title = ${singlePage.spec.title} + ' | ' + ${site.title}, head = ~{::head})}">
+
+<th:block th:fragment="head">
+    <th:block th:replace="~{modules/common/open-graph :: open-graph(_title = ${singlePage.spec.title},
+                _permalink = ${singlePage.status.permalink},
+                _cover = ${singlePage.spec.cover},
+                _excerpt = '开源仓库 - 实时展示 GitHub 项目信息',
+                _type = 'website')}"></th:block>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="${assets_link + '/css/repositories.css' + theme_version}" data-pjax>
+</th:block>
+
+<th:block th:fragment="content">
+    <div class="page repos-page" id="body-wrap">
+        <header class="not-top-img" id="page-header">
+            <nav th:replace="~{modules/nav :: nav(title = ${singlePage.spec.title})}"></nav>
+        </header>
+
+        <main class="layout hide-aside" id="content-inner">
+            <div id="page">
+                <div class="repos-container" id="article-container">
+                    <!-- 终端标题区 -->
+                    <section class="repos-hero">
+                        <h1 class="repos-page-title" th:text="${theme.config.repositories?.title} ?: '开源仓库'">开源仓库</h1>
+                        <p class="repos-page-desc" th:utext="${!#strings.isEmpty(theme.config.repositories?.subtitle)} ? ${theme.config.repositories.subtitle} : '这里汇集了我在 <b>GitHub</b> 上开源与参与的项目，数据实时同步。'">这里汇集了我在 <b>GitHub</b> 上开源与参与的项目，数据实时同步。</p>
+                    </section>
+
+                    <!-- 状态栏：绿色脉冲 + 全大写等宽指标 -->
+                    <section class="repos-statusbar" id="repos-statusbar" th:if="${theme.config.repositories?.repos != null and !#lists.isEmpty(theme.config.repositories.repos)}">
+                        <span class="status-dot" aria-hidden="true"></span>
+                        <span class="status-label">LIVE</span>
+                        <span class="status-sep"></span>
+                        <span class="status-item"><em id="status-count">0</em> REPO</span>
+                        <span class="status-sep"></span>
+                        <span class="status-item"><em id="status-stars">0</em> STAR</span>
+                        <span class="status-sep"></span>
+                        <span class="status-item"><em id="status-forks">0</em> FORK</span>
+                        <span class="status-sep"></span>
+                        <span class="status-item"><em id="status-langs">0</em> LANG</span>
+                        <span class="status-spacer"></span>
+                        <span class="status-sync" id="status-sync">syncing…</span>
+                        <a class="status-link" th:if="${!#strings.isEmpty(theme.config.repositories?.githubUser)}"
+                           th:href="'https://github.com/' + ${theme.config.repositories.githubUser}" target="_blank" rel="noopener">
+                            <i class="haofont hao-icon-github"></i><span>GitHub</span>
+                        </a>
+                    </section>
+
+                    <div class="repos-grid" id="repos-grid">
+                        <!-- 卡片由 JS 渲染 -->
+                        <div class="repos-empty" th:if="${theme.config.repositories?.repos == null or #lists.isEmpty(theme.config.repositories.repos)}">
+                            <i class="haofont hao-icon-folder-open"></i>
+                            <p>还没有配置任何仓库，请在主题设置 → 仓库页 中添加。</p>
+                        </div>
+                    </div>
+
+                    <!-- 贡献热力图 -->
+                    <section class="repos-heatmap" id="repos-heatmap"
+                             th:if="${theme.config.repositories?.showHeatmap != false and !#strings.isEmpty(theme.config.repositories?.githubUser)}">
+                        <div class="repos-heatmap-head">
+                            <span class="repos-heatmap-title">
+                                <svg class="heatmap-title-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M1 2.5A.5.5 0 0 1 1.5 2h3a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-11Zm5 4A.5.5 0 0 1 6.5 6h3a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-7Zm5 3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-4Z"></path></svg>
+                                <span>CONTRIBUTIONS</span>
+                            </span>
+                            <span class="repos-heatmap-total" id="heatmap-total">—</span>
+                        </div>
+                        <div class="repos-heatmap-body" id="heatmap-body">
+                            <div class="repos-heatmap-months" id="heatmap-months"></div>
+                            <div class="repos-heatmap-grid-wrap">
+                                <div class="repos-heatmap-days" aria-hidden="true">
+                                    <span>Mon</span><span>Wed</span><span>Fri</span>
+                                </div>
+                                <div class="repos-heatmap-grid" id="heatmap-grid"></div>
+                            </div>
+                            <div class="repos-heatmap-legend">
+                                <span>Less</span>
+                                <span class="heat-level" data-level="0"></span>
+                                <span class="heat-level" data-level="1"></span>
+                                <span class="heat-level" data-level="2"></span>
+                                <span class="heat-level" data-level="3"></span>
+                                <span class="heat-level" data-level="4"></span>
+                                <span>More</span>
+                            </div>
+                        </div>
+                        <p class="repos-heatmap-tip" id="heatmap-tip" hidden></p>
+                    </section>
+                </div>
+            </div>
+        </main>
+
+        <footer th:replace="~{modules/footer}" />
+
+        <script data-pjax th:inline="javascript">
+            (function () {
+                const cssPath = /*[[${assets_link + '/css/repositories.css' + theme_version}]]*/ '/assets/css/repositories.css';
+                const existing = Array.from(document.getElementsByTagName('link')).find(function (link) {
+                    return link.href && link.href.includes('/css/repositories.css');
+                });
+                if (existing) {
+                    if (!existing.href.includes(cssPath)) {
+                        existing.href = cssPath;
+                    }
+                } else {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = cssPath;
+                    link.setAttribute('data-pjax', '');
+                    document.head.appendChild(link);
+                }
+            })();
+        </script>
+
+        <script data-pjax th:inline="javascript">
+            (function () {
+                const rawRepos = /*[[${theme.config.repositories?.repos}]]*/ [];
+                const token = /*[[${theme.config.repositories?.token}]]*/ '';
+                const defaultSort = /*[[${theme.config.repositories?.defaultSort}]]*/ 'config';
+                const githubUser = /*[[${theme.config.repositories?.githubUser}]]*/ '';
+                const showHeatmap = /*[[${theme.config.repositories?.showHeatmap}]]*/ true;
+                // Halo 的 array 类型序列化时会把每项包裹在 realNode 中，这里统一解包
+                const repos = (Array.isArray(rawRepos) ? rawRepos : [])
+                    .map(function (r) { return r && r.realNode ? r.realNode : r; })
+                    .filter(function (r) { return r && r.repo; });
+                const grid = document.getElementById('repos-grid');
+                if (!grid || repos.length === 0) {
+                    return;
+                }
+
+                // 仓库较少时单列居中，避免末行右侧大片留白
+                if (repos.length <= 4) { grid.classList.add('is-few'); }
+
+                const escapeHtml = function (value) {
+                    if (value == null) { return ''; }
+                    return String(value)
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;');
+                };
+
+                const formatNumber = function (num) {
+                    if (num == null || isNaN(num)) { return '0'; }
+                    if (num >= 1000) {
+                        return (num / 1000).toFixed(num >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k';
+                    }
+                    return String(num);
+                };
+
+                const formatDate = function (iso) {
+                    if (!iso) { return ''; }
+                    const d = new Date(iso);
+                    if (isNaN(d.getTime())) { return ''; }
+                    const diff = Math.floor((Date.now() - d.getTime()) / 86400000);
+                    if (diff <= 0) { return 'today'; }
+                    if (diff < 30) { return diff + 'd ago'; }
+                    if (diff < 365) { return Math.floor(diff / 30) + 'mo ago'; }
+                    return Math.floor(diff / 365) + 'y ago';
+                };
+
+                const ICONS = {
+                    star: '<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>',
+                    fork: '<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"></path></svg>',
+                    bookmark: '<svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M4 1.75A.75.75 0 0 1 4.75 1h6.5a.75.75 0 0 1 .75.75v11.5a.75.75 0 0 1-1.155.632L8 10.832l-2.845 2.05A.75.75 0 0 1 4 12.25V1.75Z"></path></svg>',
+                    pin: '<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M10.072 1.03a.75.75 0 0 1 .9.37l.855 1.965a.75.75 0 0 1-.12.85l-1.4 1.4 1.085 1.085a.75.75 0 0 1 0 1.06l-2.121 2.122a.75.75 0 0 1-1.06 0L7.06 8.06l-2.72 2.72a.75.75 0 0 1-1.06-1.06l2.72-2.72-1.862-1.862a.75.75 0 0 1 0-1.06l2.122-2.122a.75.75 0 0 1 .56-.22h.062l1.4-1.4a.75.75 0 0 1 .85-.12l1.965.856a.75.75 0 0 1 .37.072Z"></path></svg>',
+                    code: '<svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4.72 3.22a.75.75 0 0 1 0 1.06L2.06 7l2.66 2.72a.75.75 0 1 1-1.06 1.06l-3.25-3.25a.75.75 0 0 1 0-1.06l3.25-3.25a.75.75 0 0 1 1.06 0Zm6.56 0a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06l-3.25 3.25a.75.75 0 1 1-1.06-1.06L13.94 7 11.28 4.28a.75.75 0 0 1 0-1.06Z"></path></svg>',
+                    issue: '<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path><path fill="currentColor" d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"></path></svg>',
+                    globe: '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M1.018 7.046a7.002 7.002 0 0 0 6.982 6.954 7.002 7.002 0 0 0 6.982-6.954A7.002 7.002 0 0 0 8 .046 7.002 7.002 0 0 0 1.018 7.046ZM8 1.046c.462 0 .943.11 1.42.352.37.188.71.455.995.804.44.54.706 1.226.706 1.964 0 .622-.19 1.256-.54 1.84-.36.608-.85 1.104-1.46 1.472-.39.234-.815.4-1.26.514.21.13.41.274.596.434l.036.03a.75.75 0 0 1 .55.72v.75a.75.75 0 0 1-1.5 0v-.445a5.1 5.1 0 0 0-.92-.715c-.248-.147-.49-.3-.71-.455-.216.155-.46.31-.71.455a5.1 5.1 0 0 0-.92.715v.445a.75.75 0 0 1-1.5 0v-.75a.75.75 0 0 1 .55-.72l.036-.03a5.9 5.9 0 0 0 .596-.434c-.445-.114-.87-.28-1.26-.514-.61-.368-1.1-.864-1.46-1.472-.35-.584-.54-1.218-.54-1.84 0-.738.266-1.424.706-1.964.285-.349.625-.616.995-.804.477-.242.958-.352 1.42-.352Z"></path></svg>'
+                };
+
+                const cardTemplate = function (cfg, idx) {
+                    const fullName = cfg.repo || '';
+                    const parts = fullName.split('/');
+                    const owner = parts[0] || '';
+                    const repoShort = parts[1] || fullName;
+                    const displayName = cfg.name || repoShort;
+                    const desc = cfg.desc || '';
+                    const note = cfg.note || '';
+                    const featured = !!cfg.featured;
+                    const href = fullName ? 'https://github.com/' + fullName : '#';
+                    return '' +
+                        '<div class="repo-card-wrap">' +
+                            '<a class="repo-card is-loading' + (featured ? ' is-featured' : '') + '" href="' + escapeHtml(href) + '" target="_blank" rel="noopener" data-repo="' + escapeHtml(fullName) + '" data-index="' + idx + '">' +
+                                // 标题行：书签 + 渐变名 + 状态徽章
+                                '<div class="repo-card-title">' +
+                                    '<span class="repo-bookmark" aria-hidden="true">' + ICONS.bookmark + '</span>' +
+                                    '<span class="repo-name">' + escapeHtml(displayName) + '</span>' +
+                                    '<span class="repo-state-badges">' +
+                                        (featured ? '<span class="repo-pinned">' + ICONS.pin + '<span>Pinned</span></span>' : '') +
+                                        '<span class="repo-archived" hidden>ARCHIVED</span>' +
+                                    '</span>' +
+                                '</div>' +
+                                // 描述行：42px 缩略图 + 描述（外链在卡片外，避免嵌套 a）
+                                '<div class="repo-card-desc-row">' +
+                                    '<span class="repo-thumb" aria-hidden="true">' + ICONS.code + '</span>' +
+                                    '<p class="repo-desc">' + (desc ? escapeHtml(desc) : '// fetching repository info…') + '</p>' +
+                                '</div>' +
+                                // Topics
+                                '<div class="repo-topics" hidden></div>' +
+                                // 手记
+                                (note ? '<p class="repo-card-note">// ' + escapeHtml(note) + '</p>' : '') +
+                                // 底部行：语言 + pushed + star + fork + license + issues + size
+                                '<div class="repo-card-bottom">' +
+                                    '<span class="repo-lang" hidden><span class="repo-lang-dot"></span><em class="repo-lang-name"></em></span>' +
+                                    '<span class="repo-pushed" hidden><span class="status-dot" aria-hidden="true"></span><em>updated</em></span>' +
+                                    '<span class="repo-meta-stars" hidden>' + ICONS.star + '<em>0</em></span>' +
+                                    '<span class="repo-meta-forks" hidden>' + ICONS.fork + '<em>0</em></span>' +
+                                    '<span class="repo-license" hidden></span>' +
+                                    '<span class="repo-issues" hidden>' + ICONS.issue + '<em>0</em></span>' +
+                                    '<span class="repo-size" hidden><em>0 KB</em></span>' +
+                                '</div>' +
+                            '</a>' +
+                            // Homepage 外链（卡片外的兄弟节点，避免嵌套 a）
+                            '<a class="repo-homepage" hidden target="_blank" rel="noopener" aria-label="Homepage">' + ICONS.globe + '</a>' +
+                            // Star 按钮（卡片外的兄弟节点，避免嵌套 a）
+                            '<a class="repo-star-btn" href="' + escapeHtml(href) + '" target="_blank" rel="noopener" aria-label="Star on GitHub">' +
+                                ICONS.star + '<span>Star</span>' +
+                            '</a>' +
+                        '</div>';
+                };
+
+                const state = repos.map(function (cfg, i) {
+                    return { cfg: cfg, index: i, data: null, done: false };
+                });
+
+                const render = function (list) {
+                    grid.innerHTML = list.map(function (item) {
+                        return cardTemplate(item.cfg, item.index);
+                    }).join('');
+                    list.forEach(function (item) {
+                        if (item.done) {
+                            const card = grid.querySelector('.repo-card[data-index="' + item.index + '"]');
+                            if (card) { paint(card, item.cfg, item.data); }
+                        }
+                    });
+                };
+
+                const sortList = function (mode) {
+                    const arr = state.slice();
+                    // 精选永远置顶
+                    arr.sort(function (a, b) {
+                        const fa = a.cfg.featured ? 1 : 0;
+                        const fb = b.cfg.featured ? 1 : 0;
+                        if (fa !== fb) { return fb - fa; }
+                        if (mode === 'stars') {
+                            return ((b.data && b.data.stargazers_count) || 0) - ((a.data && a.data.stargazers_count) || 0);
+                        }
+                        if (mode === 'updated') {
+                            const ta = a.data ? new Date(a.data.pushed_at || a.data.updated_at || 0).getTime() : 0;
+                            const tb = b.data ? new Date(b.data.pushed_at || b.data.updated_at || 0).getTime() : 0;
+                            return tb - ta;
+                        }
+                        return a.index - b.index;
+                    });
+                    return arr;
+                };
+
+                let currentSort = ['config', 'stars', 'updated'].indexOf(defaultSort) >= 0 ? defaultSort : 'config';
+
+                const paint = function (card, cfg, data) {
+                    card.classList.remove('is-loading');
+                    card.classList.add('is-ready');
+                    const wrap = card.parentElement;
+                    if (data) {
+                        // 仓库头像：用 GitHub owner avatar 替换 </> 占位符
+                        if (data.owner && data.owner.avatar_url) {
+                            const thumb = card.querySelector('.repo-thumb');
+                            if (thumb) {
+                                thumb.innerHTML = '<img src="' + escapeHtml(data.owner.avatar_url) + '" alt="" loading="lazy">';
+                            }
+                        }
+                        if (data.html_url) {
+                            card.setAttribute('href', data.html_url);
+                            const starBtn = wrap.querySelector('.repo-star-btn');
+                            if (starBtn) { starBtn.setAttribute('href', data.html_url); }
+                        }
+                        if (!cfg.desc) {
+                            card.querySelector('.repo-desc').textContent = data.description || '// no description';
+                        }
+                        // stars/forks：仅 >0 渲染，0 值不占位
+                        const stars = data.stargazers_count || 0;
+                        const starsWrap = card.querySelector('.repo-meta-stars');
+                        if (starsWrap) {
+                            if (stars > 0) {
+                                starsWrap.hidden = false;
+                                starsWrap.querySelector('em').textContent = formatNumber(stars);
+                            } else {
+                                starsWrap.hidden = true;
+                            }
+                        }
+                        const forks = data.forks_count || 0;
+                        const forksWrap = card.querySelector('.repo-meta-forks');
+                        if (forksWrap) {
+                            if (forks > 0) {
+                                forksWrap.hidden = false;
+                                forksWrap.querySelector('em').textContent = formatNumber(forks);
+                            } else {
+                                forksWrap.hidden = true;
+                            }
+                        }
+
+                        // 语言：发光圆点 + 名称
+                        if (data.language) {
+                            const lang = card.querySelector('.repo-lang');
+                            if (lang) {
+                                lang.hidden = false;
+                                lang.querySelector('.repo-lang-name').textContent = data.language;
+                            }
+                        }
+
+                        // pushed 时间：绿色脉冲点 + X ago
+                        const pushedAt = data.pushed_at || data.updated_at;
+                        if (pushedAt) {
+                            const pushed = card.querySelector('.repo-pushed');
+                            if (pushed) {
+                                pushed.hidden = false;
+                                pushed.querySelector('em').textContent = 'pushed ' + formatDate(pushedAt);
+                            }
+                        }
+
+                        // Topics：来自 GitHub
+                        if (Array.isArray(data.topics) && data.topics.length > 0) {
+                            const topicsBox = card.querySelector('.repo-topics');
+                            if (topicsBox) {
+                                topicsBox.innerHTML = data.topics.slice(0, 6).map(function (t) {
+                                    return '<span class="repo-topic">' + escapeHtml(t) + '</span>';
+                                }).join('');
+                                topicsBox.hidden = false;
+                            }
+                        }
+
+                        // License：仅在有 license 时渲染
+                        if (data.license && (data.license.spdx_id || data.license.name)) {
+                            const lic = card.querySelector('.repo-license');
+                            if (lic) {
+                                lic.hidden = false;
+                                lic.textContent = (data.license.spdx_id && data.license.spdx_id !== 'NOASSERTION')
+                                    ? data.license.spdx_id
+                                    : data.license.name;
+                            }
+                        }
+
+                        // Open issues：仅 >0 时渲染
+                        const issues = data.open_issues_count || 0;
+                        const issuesWrap = card.querySelector('.repo-issues');
+                        if (issuesWrap) {
+                            if (issues > 0) {
+                                issuesWrap.hidden = false;
+                                issuesWrap.querySelector('em').textContent = formatNumber(issues);
+                            } else {
+                                issuesWrap.hidden = true;
+                            }
+                        }
+
+                        // 仓库体积：size 单位 KB
+                        const sizeKb = data.size || 0;
+                        const sizeWrap = card.querySelector('.repo-size');
+                        if (sizeWrap && sizeKb > 0) {
+                            sizeWrap.hidden = false;
+                            const sizeEm = sizeWrap.querySelector('em');
+                            if (sizeEm) {
+                                if (sizeKb >= 1024) {
+                                    sizeEm.textContent = (sizeKb / 1024).toFixed(sizeKb >= 10240 ? 0 : 1).replace(/\.0$/, '') + ' MB';
+                                } else {
+                                    sizeEm.textContent = sizeKb + ' KB';
+                                }
+                            }
+                        }
+
+                        // Homepage：有外部站点时在卡片右上角显示地球图标
+                        if (data.homepage) {
+                            const homeLink = wrap.querySelector('.repo-homepage');
+                            if (homeLink) {
+                                homeLink.href = data.homepage;
+                                homeLink.hidden = false;
+                            }
+                        }
+
+                        // Archived / Disabled 状态徽章
+                        if (data.archived || data.disabled) {
+                            const archived = card.querySelector('.repo-archived');
+                            if (archived) {
+                                archived.hidden = false;
+                                archived.textContent = data.disabled ? 'DISABLED' : 'ARCHIVED';
+                            }
+                            card.classList.add('is-archived');
+                        }
+                    } else {
+                        card.classList.add('is-offline');
+                        if (!cfg.desc) {
+                            card.querySelector('.repo-desc').textContent = '// open on GitHub →';
+                        }
+                        const bottom = card.querySelector('.repo-card-bottom');
+                        if (bottom) { bottom.remove(); }
+                    }
+                };
+
+                // 初次渲染
+                render(sortList(currentSort));
+
+                // ============ 状态栏聚合统计 ============
+                const renderStats = function () {
+                    const done = state.filter(function (s) { return s.done && s.data; });
+                    const totalStars = done.reduce(function (sum, s) { return sum + (s.data.stargazers_count || 0); }, 0);
+                    const totalForks = done.reduce(function (sum, s) { return sum + (s.data.forks_count || 0); }, 0);
+                    const langSet = {};
+                    done.forEach(function (s) { if (s.data.language) { langSet[s.data.language] = true; } });
+
+                    const setText = function (id, val) {
+                        const el = document.getElementById(id);
+                        if (el) { el.textContent = formatNumber(val); }
+                    };
+                    setText('status-count', state.length);
+                    setText('status-stars', totalStars);
+                    setText('status-forks', totalForks);
+                    setText('status-langs', Object.keys(langSet).length);
+
+                    // 0 值灰色，有值才上强调色
+                    const starsOn = totalStars > 0;
+                    const starsEl = document.getElementById('status-stars');
+                    if (starsEl) { starsEl.classList.toggle('is-active', starsOn); }
+
+                    const sync = document.getElementById('status-sync');
+                    if (sync) {
+                        if (done.length === state.length) {
+                            sync.textContent = done.length + '/' + state.length + ' synced · GitHub API';
+                            sync.classList.add('is-done');
+                        } else {
+                            sync.textContent = done.length + '/' + state.length + ' synced · GitHub API';
+                        }
+                    }
+                };
+                renderStats();
+
+                const headers = { 'Accept': 'application/vnd.github+json, application/vnd.github.mercy-preview+json' };
+                if (token) { headers['Authorization'] = 'token ' + token; }
+
+                // ============ 本地缓存（localStorage，短 TTL） ============
+                const CACHE_PREFIX = 'repos_cache_v1:';
+                const CACHE_TTL = 30 * 60 * 1000;
+                const REQ_TIMEOUT = 8000;
+
+                const cacheGet = function (repo) {
+                    try {
+                        const raw = localStorage.getItem(CACHE_PREFIX + repo);
+                        if (!raw) { return null; }
+                        const obj = JSON.parse(raw);
+                        if (!obj || !obj.data) { return null; }
+                        return obj;
+                    } catch (e) { return null; }
+                };
+
+                const cacheSet = function (repo, data) {
+                    try {
+                        localStorage.setItem(CACHE_PREFIX + repo, JSON.stringify({ t: Date.now(), data: data }));
+                    } catch (e) { /* 隐私模式/超配额时静默忽略 */ }
+                };
+
+                const fetchWithTimeout = function (url) {
+                    if (typeof AbortController === 'undefined') {
+                        return fetch(url, { headers: headers });
+                    }
+                    const ctrl = new AbortController();
+                    const timer = setTimeout(function () { ctrl.abort(); }, REQ_TIMEOUT);
+                    return fetch(url, { headers: headers, signal: ctrl.signal })
+                        .finally(function () { clearTimeout(timer); });
+                };
+
+                state.forEach(function (item) {
+                    const cached = cacheGet(item.cfg.repo);
+                    const fresh = cached && (Date.now() - cached.t < CACHE_TTL);
+
+                    if (fresh) {
+                        item.data = cached.data;
+                        item.done = true;
+                        const card = grid.querySelector('.repo-card[data-index="' + item.index + '"]');
+                        if (card) { paint(card, item.cfg, cached.data); }
+                        if (currentSort !== 'config') { render(sortList(currentSort)); }
+                        renderStats();
+                        return;
+                    }
+
+                    fetchWithTimeout('https://api.github.com/repos/' + item.cfg.repo)
+                        .then(function (res) {
+                            if (!res.ok) { throw new Error('HTTP ' + res.status); }
+                            return res.json();
+                        })
+                        .then(function (data) {
+                            item.data = data;
+                            item.done = true;
+                            cacheSet(item.cfg.repo, data);
+                            const card = grid.querySelector('.repo-card[data-index="' + item.index + '"]');
+                            if (card) { paint(card, item.cfg, data); }
+                            if (currentSort !== 'config') { render(sortList(currentSort)); }
+                            renderStats();
+                        })
+                        .catch(function () {
+                            item.done = true;
+                            const card = grid.querySelector('.repo-card[data-index="' + item.index + '"]');
+                            if (cached && cached.data) {
+                                item.data = cached.data;
+                                if (card) { paint(card, item.cfg, cached.data); }
+                                if (currentSort !== 'config') { render(sortList(currentSort)); }
+                            } else if (card) {
+                                paint(card, item.cfg, null);
+                            }
+                            renderStats();
+                        });
+                });
+
+                // ============ 贡献热力图 ============
+                if (showHeatmap && githubUser) {
+                    const heatSection = document.getElementById('repos-heatmap');
+                    const heatGrid = document.getElementById('heatmap-grid');
+                    const heatMonths = document.getElementById('heatmap-months');
+                    const heatTotal = document.getElementById('heatmap-total');
+                    const heatTip = document.getElementById('heatmap-tip');
+
+                    const levelFor = function (count) {
+                        if (count <= 0) return 0;
+                        if (count < 4) return 1;
+                        if (count < 8) return 2;
+                        if (count < 13) return 3;
+                        return 4;
+                    };
+
+                    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+                    const renderHeatmap = function (calendar) {
+                        if (!calendar || !calendar.weeks) return;
+                        const weeks = calendar.weeks;
+                        // 月份标签
+                        const monthLabels = [];
+                        let lastMonth = -1;
+                        weeks.forEach(function (w, wi) {
+                            const firstDay = w.contributionDays && w.contributionDays[0];
+                            if (firstDay) {
+                                const m = new Date(firstDay.date).getMonth();
+                                if (m !== lastMonth) {
+                                    monthLabels.push({ week: wi, label: MONTHS[m] });
+                                    lastMonth = m;
+                                }
+                            }
+                        });
+                        if (heatMonths) {
+                            heatMonths.innerHTML = monthLabels.map(function (m) {
+                                return '<span style="grid-column:' + (m.week + 1) + '">' + m.label + '</span>';
+                            }).join('');
+                        }
+                        // 格子：按列（周）渲染，每列 7 天
+                        const cells = [];
+                        weeks.forEach(function (w) {
+                            const days = w.contributionDays || [];
+                            for (let d = 0; d < 7; d++) {
+                                const day = days[d] || { contributionCount: 0, date: '' };
+                                const lvl = levelFor(day.contributionCount || 0);
+                                const dateStr = day.date || '';
+                                const count = day.contributionCount || 0;
+                                const tip = dateStr ? (count + ' contributions on ' + dateStr) : '';
+                                cells.push(
+                                    '<span class="heat-cell" data-level="' + lvl + '"' +
+                                    (dateStr ? ' data-date="' + dateStr + '"' : '') +
+                                    (count ? ' data-count="' + count + '"' : '') +
+                                    (tip ? ' title="' + tip + '"' : '') +
+                                    '></span>'
+                                );
+                            }
+                        });
+                        if (heatGrid) {
+                            heatGrid.innerHTML = cells.join('');
+                            heatGrid.style.gridTemplateColumns = 'repeat(' + weeks.length + ', 1fr)';
+                        }
+                        if (heatTotal && calendar.totalContributions != null) {
+                            heatTotal.textContent = calendar.totalContributions.toLocaleString() + ' contributions in the last year';
+                        }
+                        if (heatTip) { heatTip.hidden = true; }
+                        if (heatSection) { heatSection.classList.add('is-ready'); }
+                    };
+
+                    const fetchHeatmap = function () {
+                        if (!token) {
+                            if (heatTip) {
+                                heatTip.textContent = '热力图需要 GitHub Token 才能加载，请在主题设置中填写。';
+                                heatTip.hidden = false;
+                            }
+                            return;
+                        }
+                        const query = 'query($login:String!){user(login:$login){contributionsCollection{contributionCalendar{totalContributions weeks{contributionDays{contributionCount date}}}}}}';
+                        fetch('https://api.github.com/graphql', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'bearer ' + token
+                            },
+                            body: JSON.stringify({ query: query, variables: { login: githubUser } })
+                        })
+                            .then(function (res) {
+                                if (!res.ok) { throw new Error('HTTP ' + res.status); }
+                                return res.json();
+                            })
+                            .then(function (json) {
+                                const cal = json && json.data && json.data.user &&
+                                    json.data.user.contributionsCollection &&
+                                    json.data.user.contributionsCollection.contributionCalendar;
+                                if (cal) {
+                                    renderHeatmap(cal);
+                                } else {
+                                    throw new Error('no calendar');
+                                }
+                            })
+                            .catch(function () {
+                                if (heatTip) {
+                                    heatTip.textContent = '贡献数据加载失败，请检查 Token 权限（需要任意有效 token 以读取公开贡献）。';
+                                    heatTip.hidden = false;
+                                }
+                            });
+                    };
+
+                    fetchHeatmap();
+                }
+            })();
+        </script>
+    </div>
+</th:block>
+
+</html>

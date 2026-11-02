@@ -188,6 +188,26 @@
         </section>
 
         <footer th:replace="~{modules/footer}"/>
+
+        <script data-pjax th:inline="javascript">
+            (function () {
+                const cssPath = /*[[${assets_link + '/css/home-hero.css' + theme_version}]]*/ '/assets/css/home-hero.css';
+                const existing = Array.from(document.getElementsByTagName('link')).find(function (link) {
+                    return link.href && link.href.includes('/css/home-hero.css');
+                });
+                if (existing) {
+                    if (!existing.href.includes(cssPath)) {
+                        existing.href = cssPath;
+                    }
+                } else {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = cssPath;
+                    link.setAttribute('data-pjax', '');
+                    document.head.appendChild(link);
+                }
+            })();
+        </script>
     </div>
 
 </th:block>

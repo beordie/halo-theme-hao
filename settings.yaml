@@ -3371,6 +3371,80 @@ spec:
               label: 按钮标题
               placeholder: 请输入按钮标题
 
+    - group: repositories
+      label: 仓库页
+      formSchema:
+        - $formkit: text
+          name: title
+          label: 页面主标题
+          value: 开源仓库
+          help: 显示在页面顶部的大标题
+        - $formkit: textarea
+          name: subtitle
+          label: 页面描述
+          value: 这里汇集了我在 <b>GitHub</b> 上开源与参与的项目，数据实时同步。
+          help: 显示在主标题下方的描述文字，支持 HTML（可用 <b> 加粗、<a> 链接、<code> 行内代码）。留空则使用默认文案
+        - $formkit: text
+          name: githubUser
+          label: GitHub 用户名（可选）
+          help: 填写后页面顶部会显示前往 GitHub 主页的入口链接，例如 chengzhongxue
+        - $formkit: select
+          name: defaultSort
+          label: 排序方式
+          value: config
+          options:
+            - label: 配置顺序
+              value: config
+            - label: Star 数
+              value: stars
+            - label: 最近更新
+              value: updated
+          help: 卡片列表的排序方式
+        - $formkit: text
+          name: token
+          label: GitHub Token（可选）
+          help: 未认证的 GitHub API 每小时每 IP 限 60 次请求。如需提升配额或显示贡献热力图可填写只读 token。热力图需要任意有效 token（公开贡献），如需包含私有贡献需勾选 read:user 权限。注意 token 会暴露在前端页面中，建议仅使用无权限的公开只读 token
+        - $formkit: checkbox
+          name: showHeatmap
+          label: 显示贡献热力图
+          value: true
+          help: 在仓库列表底部显示近一年的 GitHub 贡献热力图，需要填写 GitHub 用户名和 Token
+        - $formkit: array
+          name: repos
+          label: 精选仓库列表
+          value: [ ]
+          help: 填写要展示的仓库，格式为 owner/repo，例如 chengzhongxue/halo-theme-hao
+          itemLabels:
+            - type: text
+              label: $value.repo
+          children:
+            - $formkit: text
+              name: repo
+              label: 仓库全名
+              placeholder: owner/repo，例如 chengzhongxue/halo-theme-hao
+              validation: required
+              help: GitHub 仓库全名，用于实时获取仓库信息
+            - $formkit: text
+              name: name
+              label: 展示名称（可选）
+              help: 留空则使用 GitHub 仓库名
+            - $formkit: text
+              name: desc
+              label: 描述（可选）
+              help: 留空则使用 GitHub 仓库描述
+            - $formkit: text
+              name: tag
+              label: 标签（可选）
+              help: 卡片右上角小标签，例如 主力项目
+            - $formkit: text
+              name: note
+              label: 手记（可选）
+              help: 卡片描述下方的代码注释式个人留言，例如 个人主页源码，dogfooding 中
+            - $formkit: checkbox
+              name: featured
+              label: 设为精选
+              help: 精选仓库会占据整行大卡片，展示在列表最前面
+
     - group: other
       label: 其他设置
       formSchema:
