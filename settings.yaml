@@ -1932,17 +1932,9 @@ spec:
           label: 大标题
           value: 我和我的小伙伴们
         - $formkit: url
-          name: fcircleUrl
-          value: "/fcircle"
-          label: 鱼塘链接
-        - $formkit: url
           name: linksUrl
           value: "/links"
           label: 友链链接
-        - $formkit: switch
-          name: linksCanvas
-          label: 互动友链
-          value: false
         - $formkit: switch
           name: enable_comment
           label: 启用评论
