@@ -5,19 +5,21 @@
   color: var(--heo-fontcolor);
   font-size: 14px;
   line-height: 1.6;
+  margin-top: 0;
+  display: block;
 }
 
 .fclean {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px 0;
+  padding: 28px 24px 0;
 }
 
 /* ---------- 主体：左品牌 + 右链接 ---------- */
 .fclean__main {
   display: flex;
   justify-content: space-between;
-  gap: 40px;
+  gap: 32px;
   align-items: flex-start;
   flex-wrap: wrap;
 }
@@ -137,8 +139,8 @@
 
 /* ---------- 底条 ---------- */
 .fclean__bar {
-  margin-top: 36px;
-  padding: 18px 0;
+  margin-top: 24px;
+  padding: 16px 0;
   border-top: 1px solid var(--heo-card-border, color-mix(in srgb, var(--heo-fontcolor) 10%, transparent));
   display: flex;
   align-items: center;
