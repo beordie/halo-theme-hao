@@ -100,7 +100,7 @@
                 <!-- Powered by -->
                 <span class="fclean__powered">
                     Powered by <a href="https://halo.run" rel="noopener external nofollow" target="_blank">Halo</a>
-                    / <a href="https://github.com/liuzhihang/halo-theme-hao" rel="noopener external nofollow" target="_blank">HEO</a>
+                    / <a href="https://github.com/beordie/halo-theme-hao" rel="noopener external nofollow" target="_blank">HEO</a>
                 </span>
 
                 <span class="fclean__sep" th:if="${(pluginFinder.available('PluginFeed') and theme.config.footer.footerContent.default_enable_group.dingyue) || theme.config.footer.footerContent.default_enable_group.zhuti}">·</span>
@@ -108,7 +108,7 @@
                 <!-- 订阅 -->
                 <a th:if="${pluginFinder.available('PluginFeed') and theme.config.footer.footerContent.default_enable_group.dingyue}" class="fclean__link" href="/rss.xml">订阅</a>
                 <!-- 主题 -->
-                <a th:if="${theme.config.footer.footerContent.default_enable_group.zhuti}" class="fclean__link" href="https://github.com/liuzhihang/halo-theme-hao" rel="noopener external nofollow" target="_blank">主题</a>
+                <a th:if="${theme.config.footer.footerContent.default_enable_group.zhuti}" class="fclean__link" href="https://github.com/beordie/halo-theme-hao" rel="noopener external nofollow" target="_blank">主题</a>
             </div>
 
             <!-- 回顶 -->
