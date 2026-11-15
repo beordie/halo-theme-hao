@@ -1363,14 +1363,8 @@ spec:
           label: 社交媒体
           value:
             socialMediaLeft:
-            centerImg: https://liuzhihang.com/upload/logo.png
             socialMediaRight:
           children:
-            - $formkit: attachment
-              name: centerImg
-              label: 中间 logo
-              placeholder: 请填写 logo 图片地址
-              value: https://liuzhihang.com/upload/logo.png
             - $formkit: array
               name: socialMediaLeft
               label: 左侧
