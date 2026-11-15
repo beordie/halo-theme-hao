@@ -46,7 +46,7 @@
                 </div>
 
                 <!-- 友链列 -->
-                <div class="fclean__col" th:if="${theme.config.footer.footer_group.enable_footer_group}">
+                <div class="fclean__col" th:if="${theme.config.footer.footer_group.enable_footer_group and pluginFinder.available('PluginLinks')}">
                     <div class="fclean__col-head">
                         <h4 class="fclean__col-title">友链</h4>
                         <button class="fclean__refresh" id="footer-random-friends-btn"
