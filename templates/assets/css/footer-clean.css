@@ -112,6 +112,19 @@
   color: var(--heo-theme);
 }
 
+/* 友链由 JS 注入，class 为 footer-item */
+.fclean__col .footer-item {
+  display: block;
+  color: var(--heo-secondfont, #858585);
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 1.6;
+  transition: color 0.2s;
+}
+.fclean__col .footer-item:hover {
+  color: var(--heo-theme);
+}
+
 /* ---------- 友链刷新按钮 ---------- */
 .fclean__col-head {
   display: flex;
