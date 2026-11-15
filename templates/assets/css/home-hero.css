@@ -18,33 +18,6 @@
     min-width: 0;
 }
 
-.home-hero__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--heo-secondtext);
-    padding: 0.35rem 0.85rem;
-    background: var(--heo-secondbg);
-    border-radius: 100px;
-    margin-bottom: 1.25rem;
-}
-
-.home-hero__dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--heo-theme);
-    box-shadow: 0 0 0 4px var(--heo-theme-op);
-    animation: heroDotPulse 2s ease-in-out infinite;
-}
-
-@keyframes heroDotPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
 .home-hero__title {
     font-size: clamp(2rem, 4.2vw, 3.5rem);
     font-weight: 800;
@@ -141,69 +114,181 @@
     position: relative;
 }
 
-.home-hero__code {
-    background: #1e1e2e;
-    border-radius: 10px;
+.home-hero__stage {
+    position: relative;
+    height: 460px;
+    background: #070B16;
+    border-radius: 16px;
     overflow: hidden;
-    border: 1px solid #0d0d14;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px #2a2a3a, inset 0 1px 0 rgba(255,255,255,0.06);
     transform: perspective(1000px) rotateY(-2deg) rotateX(1deg);
     transition: transform 0.4s ease;
 }
 
-.home-hero__code:hover {
+.home-hero__stage:hover {
     transform: perspective(1000px) rotateY(0) rotateX(0);
 }
 
-.home-hero__code-dots {
+/* ============ 终端窗口 ============ */
+.cc-term {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #070B16;
+    box-shadow: 0 30px 70px -24px rgba(4, 10, 30, .7), 0 0 0 1px color-mix(in srgb, var(--heo-theme) 10%, transparent) inset;
+    transition: background .5s, box-shadow .5s;
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: #181825;
-    border-bottom: 1px solid #0d0d14;
+    flex-direction: column;
 }
 
-.home-hero__code-dots span {
+.cc-term__bar {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.cc-term__bar--dark { background: #0E1525; border-bottom: 1px solid color-mix(in srgb, var(--heo-theme) 12%, transparent); }
+
+.cc-dot {
     width: 12px;
     height: 12px;
     border-radius: 50%;
+    display: inline-block;
 }
 
-.home-hero__code-dots span:nth-child(1) { background: #ff5f57; }
-.home-hero__code-dots span:nth-child(2) { background: #febc2e; }
-.home-hero__code-dots span:nth-child(3) { background: #28c840; }
-
-.home-hero__code-lang {
-    margin-left: auto;
-    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
-    font-size: 0.78rem;
-    color: rgba(255,255,255,0.4);
+.cc-term__title {
+    margin-left: 12px;
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    font-size: 12px;
+    color: #6A7896;
 }
 
-.home-hero__code-body {
+.cc-term__body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
+#cc-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+    touch-action: none;
+}
+#cc-canvas:active { cursor: grabbing; }
+
+.cc-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: #070B16;
+    color: #8A90A6;
+}
+.cc-fallback.flex { display: flex; }
+.cc-fallback span:last-child { color: #5C6378; margin-top: 8px; }
+
+/* 网格底纹 */
+.cc-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(color-mix(in srgb, var(--heo-theme) 5.5%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--heo-theme) 5.5%, transparent) 1px, transparent 1px);
+    background-size: 30px 30px;
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
+    transition: opacity .5s;
+    pointer-events: none;
+}
+
+/* 扫描线 */
+.cc-scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 120px;
+    top: -120px;
+    background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--heo-theme) 7%, transparent), color-mix(in srgb, var(--heo-theme) 14%, transparent), color-mix(in srgb, var(--heo-theme) 7%, transparent), transparent);
+    animation: cc-scan 4.5s linear infinite;
+    pointer-events: none;
+}
+@keyframes cc-scan {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(600px); }
+}
+.cc-term.reduced .cc-scanline { animation: none; }
+
+/* HUD 四角括号 */
+.cc-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: var(--heo-theme);
+    opacity: .75;
+    transition: .5s;
+    pointer-events: none;
+}
+.cc-corner--tl { top: 12px; left: 12px; border-top: 2px solid; border-left: 2px solid; }
+.cc-corner--tr { top: 12px; right: 12px; border-top: 2px solid; border-right: 2px solid; }
+.cc-corner--bl { bottom: 12px; left: 12px; border-bottom: 2px solid; border-left: 2px solid; }
+.cc-corner--br { bottom: 12px; right: 12px; border-bottom: 2px solid; border-right: 2px solid; }
+
+.cc-phase-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--heo-theme);
+    animation: cc-pulse 1.4s ease-in-out infinite;
+    margin-right: 6px;
+}
+@keyframes cc-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+
+.cc-hud {
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    pointer-events: none;
+    user-select: none;
+    position: absolute;
+    font-size: 11px;
+}
+.cc-hud--tl { top: 20px; left: 20px; }
+.cc-hud--tr { top: 20px; right: 20px; text-align: right; line-height: 1.6; }
+.cc-hud--bl { bottom: 20px; left: 20px; line-height: 1.6; }
+
+.cc-hud__phase {
+    display: flex;
+    align-items: center;
+    color: color-mix(in srgb, var(--heo-theme) 75%, white);
     margin: 0;
-    padding: 1.2rem 1.4rem 1.4rem;
-    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
-    font-size: 0.88rem;
-    line-height: 1.75;
-    color: #cdd6f4;
-    overflow-x: auto;
+}
+.cc-hud__readout {
+    margin: 2px 0 0;
+    color: #4D5F7E;
+    letter-spacing: .08em;
+}
+.cc-hud__num {
+    color: color-mix(in srgb, var(--heo-theme) 75%, white);
+}
+.cc-hud-tag {
+    display: inline-block;
+    border: 1px solid color-mix(in srgb, var(--heo-theme) 35%, transparent);
+    border-radius: 4px;
+    padding: 2px 8px;
+    color: var(--heo-theme);
+    background: color-mix(in srgb, var(--heo-theme) 6%, transparent);
+    letter-spacing: .12em;
+    font-size: 10px;
 }
 
-.home-hero__code-body code {
-    font-family: inherit;
-    background: none;
-    padding: 0;
-    color: inherit;
-}
-
-.hkc-k { color: #cba6f7; }
-.hkc-v { color: #89b4fa; }
-.hkc-p { color: #f9e2af; }
-.hkc-s { color: #a6e3a1; }
-.hkc-f { color: #89dceb; }
-.hkc-c { color: #6c7086; font-style: italic; }
+.hidden { display: none !important; }
 
 .home-hero__moment {
     margin-top: 0;
@@ -556,7 +641,8 @@ body[data-type=index] .home-hero-layout > #content-inner {
         font-size: 2rem;
     }
 
-    .home-hero__code {
+    .home-hero__stage {
+        height: 380px;
         transform: none;
     }
 
@@ -584,12 +670,21 @@ body[data-type=index] .home-hero-layout > #content-inner {
         justify-content: center;
     }
 
-    .home-hero__code-body {
-        font-size: 0.78rem;
-        padding: 1rem;
-    }
-
     body[data-type=index] .home-content__main #recent-posts.recent-posts > .recent-post-item .post_cover {
         height: 200px;
     }
+}
+px;
+    }
+}
+nt-post-item .post_cover {
+        height: 200px;
+    }
+}
+
+nt-post-item .post_cover {
+        height: 200px;
+    }
+}
+
 }

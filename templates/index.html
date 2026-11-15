@@ -8,6 +8,14 @@
                 _excerpt = ${site.seo.description},
                 _type = 'website')}"></th:block>
     <link rel="stylesheet" th:href="${assets_link + '/css/home-hero.css' + theme_version}" data-pjax>
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
 </th:block>
 <th:block th:fragment="content">
 
@@ -125,16 +133,10 @@
         </header>
 
         <section class="home-hero" id="home-hero"
-                 th:with="profileName=${#strings.isEmpty(theme.config.sidebar.profile.profileName) ? site.title : theme.config.sidebar.profile.profileName},
-                          profileIdentity=${theme.config.sidebar.profile.profileIdentity},
-                          profileDesc=${theme.config.sidebar.profile.profileDesc},
+                 th:with="profileDesc=${theme.config.sidebar.profile.profileDesc},
                           heroTitle=${#strings.isEmpty(theme.config.top.homePortal?.title) ? 'Building solutions. Sharing knowledge.' : theme.config.top.homePortal.title},
                           heroSubtitle=${#strings.isEmpty(theme.config.top.homePortal?.subtitle) ? '后端工程 · AI 工具 · 系统设计 · 生活观察' : theme.config.top.homePortal.subtitle}">
             <div class="home-hero__left">
-                <div class="home-hero__eyebrow">
-                    <span class="home-hero__dot"></span>
-                    <span th:text="${site.title}">Blog</span>
-                </div>
                 <h1 class="home-hero__title">
                     <span th:text="${heroTitle}">Building solutions. Sharing knowledge.</span><span class="home-hero__cursor">_</span>
                 </h1>
@@ -153,24 +155,42 @@
                 <div class="home-hero__moment" th:replace="~{modules/moment}"/>
             </div>
             <div class="home-hero__right">
-                <div class="home-hero__code">
-                    <div class="home-hero__code-dots">
-                        <span></span><span></span><span></span>
-                        <span class="home-hero__code-lang">~/about.js</span>
+                <div class="home-hero__stage" id="hero-stage">
+                    <div class="cc-term" id="cc-term">
+                        <div class="cc-term__bar" id="cc-term-bar">
+                            <span class="cc-dot" style="background:#FF5F57"></span>
+                            <span class="cc-dot" style="background:#FEBC2E"></span>
+                            <span class="cc-dot" style="background:#28C840"></span>
+                            <span class="cc-term__title" id="cc-term-title">~/beordie — cyber-core</span>
+                        </div>
+                        <div class="cc-term__body" id="cc-term-body">
+                            <div class="cc-grid-bg"></div>
+                            <div class="cc-scanline"></div>
+                            <canvas id="cc-canvas" aria-label="赛博能量核心动画"></canvas>
+                            <div id="cc-fallback" class="cc-fallback hidden">
+                                <span>WebGL unavailable</span>
+                                <span>当前浏览器不支持 WebGL 渲染</span>
+                            </div>
+                            <span class="cc-corner cc-corner--tl"></span>
+                            <span class="cc-corner cc-corner--tr"></span>
+                            <span class="cc-corner cc-corner--bl"></span>
+                            <span class="cc-corner cc-corner--br"></span>
+
+                            <div class="cc-hud cc-hud--tl">
+                                <p class="cc-hud__phase"><span class="cc-phase-dot"></span><span id="cc-phase">CYBER CORE · ONLINE</span></p>
+                                <p class="cc-hud__readout">WEBGL2 · PARTICLE ENGINE</p>
+                            </div>
+                            <div class="cc-hud cc-hud--tr">
+                                <p class="cc-hud-tag">DRAG TO ROTATE</p>
+                                <p class="cc-hud__readout">NODES <span class="cc-hud__num" id="cc-nodes">0</span></p>
+                                <p class="cc-hud__readout">FPS <span class="cc-hud__num" id="cc-fps">60</span></p>
+                            </div>
+                            <div class="cc-hud cc-hud--bl">
+                                <p class="cc-hud__readout">ROT X <span class="cc-hud__num" id="cc-rotx">+0.00</span></p>
+                                <p class="cc-hud__readout">ROT Y <span class="cc-hud__num" id="cc-roty">+0.00</span></p>
+                            </div>
+                        </div>
                     </div>
-                    <pre class="home-hero__code-body"><code><span class="hkc-k">const</span> <span class="hkc-v">author</span> = {
-  <span class="hkc-p">name</span>: <span class="hkc-s">"<th:block th:text="${profileName}">Author</th:block>"</span><th:block th:if="${not #strings.isEmpty(profileIdentity)}">,
-  <span class="hkc-p">role</span>: <span class="hkc-s">"<th:block th:text="${profileIdentity}">Developer</th:block>"</span></th:block>,
-  <span class="hkc-p">stack</span>: [<span class="hkc-s">"Java"</span>, <span class="hkc-s">"Go"</span>, <span class="hkc-s">"Python"</span>, <span class="hkc-s">"AI"</span>],
-  <span class="hkc-p">focus</span>: [<span class="hkc-s">"后端工程"</span>, <span class="hkc-s">"系统设计"</span>, <span class="hkc-s">"AI 工具"</span>],
-  <span class="hkc-p">status</span>: <span class="hkc-s">"writing"</span>
-};
-
-<span class="hkc-k">function</span> <span class="hkc-f">share</span>(topic) {
-  <span class="hkc-k">return</span> <span class="hkc-s">`Writing about ${topic}...`</span>;
-}
-
-<span class="hkc-c">// 把问题写清楚，把答案留给时间。</span></code></pre>
                 </div>
             </div>
         </section>
@@ -208,6 +228,9 @@
                 }
             })();
         </script>
+
+        <script type="module" data-pjax th:src="${assets_link + '/js/home-hero-three.js' + theme_version}"></script>
+
     </div>
 
 </th:block>

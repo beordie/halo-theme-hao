@@ -1931,6 +1931,10 @@ spec:
           name: bigTitle
           label: 大标题
           value: 我和我的小伙伴们
+        - $formkit: text
+          name: subtitle
+          label: 副标题
+          value: 常用站点、开发工具与学习资源
         - $formkit: url
           name: linksUrl
           value: "/links"

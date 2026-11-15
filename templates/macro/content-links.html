@@ -1,20 +1,24 @@
 <th:block th:fragment="content-links(htmlType)">
 
     <th:block th:with="groups = ${linkFinder.groupBy()}">
-        <div class="links-page" id="banners">
+        <div class="links-page" id="links-page">
             <!-- 标题区 -->
             <div class="links-hero">
                 <div class="banners-title-small" th:text="${theme.config.link.smallTitle}"></div>
                 <div class="banners-title-big" th:text="${theme.config.link.bigTitle}"></div>
+                <p class="links-hero-sub" th:text="${not #strings.isEmpty(theme.config.link.subtitle) ? theme.config.link.subtitle : '常用站点、开发工具与学习资源'}"></p>
             </div>
 
             <!-- 分组 + 卡片网格 -->
             <th:block th:each="group : ${groups}">
                 <div class="links-group">
-                    <h2 class="links-group-title" th:if="${not #strings.isEmpty(group.spec.displayName)}">
-                        <span th:text="${group.spec.displayName}"></span>
-                        <span class="links-group-count" th:text="'(' + ${group.links.size} + ')'"></span>
-                    </h2>
+                    <div class="links-group-head" th:if="${not #strings.isEmpty(group.spec.displayName)}">
+                        <span class="links-group-bar"></span>
+                        <h2 class="links-group-title">
+                            <span th:text="${group.spec.displayName}"></span>
+                        </h2>
+                        <span class="links-group-count" th:text="${group.links.size}"></span>
+                    </div>
                     <p class="links-group-desc"
                        th:if="${not #strings.isEmpty(#annotations.get(group, 'description'))}"
                        th:text="${#annotations.get(group, 'description')}"></p>
@@ -22,17 +26,52 @@
                     <div class="links-grid">
                         <a class="links-card" th:each="link : ${group.links}"
                            th:href="${link.spec.url}"
-                           th:title="${link.spec.description}"
-                           target="_blank" rel="external nofollow">
-                            <img class="links-card-favicon"
-                                 th:alt="${link.spec.displayName}"
-                                 th:with="img = @{${link.spec.logo}}"
-                                 th:src="${isLazyload ? '' : img}"
-                                 th:data-lazy-src="${isLazyload ? img : ''}">
+                           th:data-name="${link.spec.displayName}"
+                           th:data-desc="${link.spec.description}"
+                           th:data-tag="${#annotations.get(link, 'label')}"
+                           th:title="${link.spec.displayName + (not #strings.isEmpty(link.spec.description) ? ' · ' + link.spec.description : '')}"
+                           target="_blank" rel="external nofollow"
+                           th:with="name=${link.spec.displayName},
+                                    letter=${#strings.substring(name,0,1)},
+                                    nLen=${#strings.length(name)},
+                                    palIdx=${(nLen * 7 + nLen * 13 + 5) % 9},
+                                    label=${#strings.defaultString(#annotations.get(link, 'label'), '')},
+                                    labelLow=${#strings.toLowerCase(label)},
+                                    catCls=${#strings.contains(labelLow,'ai') ? 'cat-ai'
+                                           : (#strings.contains(label,'工具') or #strings.contains(label,'开发') or #strings.contains(labelLow,'dev')) ? 'cat-dev'
+                                           : (#strings.contains(label,'图片') or #strings.contains(label,'图像') or #strings.contains(label,'媒体')) ? 'cat-media'
+                                           : #strings.contains(labelLow,'rpc') ? 'cat-rpc'
+                                           : (#strings.contains(label,'博客') or #strings.contains(labelLow,'blog')) ? 'cat-blog'
+                                           : ''}">
+
+                            <!-- 渐变首字母头像（替代模糊 favicon） -->
+                            <div class="links-card-icon"
+                                 th:classappend="'pal-' + ${palIdx}">
+                                <span class="links-card-letter" th:text="${letter}"></span>
+                                <img class="links-card-favicon"
+                                     th:if="${not #strings.isEmpty(link.spec.logo) and not #strings.equals(link.spec.logo,'/')}"
+                                     th:src="@{${link.spec.logo}}"
+                                     th:alt="${name}"
+                                     onerror="this.style.display='none'">
+                            </div>
+
                             <div class="links-card-body">
                                 <span class="links-card-name" th:text="${link.spec.displayName}"></span>
-                                <span class="links-card-desc" th:text="${link.spec.description}"></span>
+                                <span class="links-card-desc"
+                                      th:if="${not #strings.isEmpty(link.spec.description)}"
+                                      th:text="${link.spec.description}"></span>
                             </div>
+
+                            <!-- 分类角标：按类别自动配色（cat-* 类定义颜色） -->
+                            <span class="links-card-tag"
+                                  th:if="${not #strings.isEmpty(label)}"
+                                  th:classappend="${catCls}"
+                                  th:text="${label}"></span>
+
+                            <!-- hover 箭头 -->
+                            <span class="links-card-arrow">
+                                <i class="haofont hao-icon-arrow-right"></i>
+                            </span>
                         </a>
                     </div>
                 </div>
@@ -46,4 +85,56 @@
             <th:block th:if="${htmlType == 'page'}" th:utext="${singlePage.content.content}"></th:block>
         </div>
     </th:block>
+
+    <!-- 3D 倾斜 + 玻璃光泽（触屏自动关闭） -->
+    <script th:inline="javascript">
+    (function(){
+        var isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        if (isTouch) return;
+
+        var MAX_RX = 7;   // rotateX 最大角度
+        var MAX_RY = 9;   // rotateY 最大角度
+        var LIFT = -4;    // 悬浮上移 px
+
+        var cards = document.querySelectorAll('.links-card');
+        cards.forEach(function(card){
+            var rafId = null;
+            var state = { rx: 0, ry: 0, gx: 50, gy: 50, active: false };
+
+            function apply(){
+                rafId = null;
+                if (!state.active) return;
+                card.style.transform =
+                    'translateY(' + LIFT + 'px) ' +
+                    'rotateX(' + state.rx.toFixed(2) + 'deg) ' +
+                    'rotateY(' + state.ry.toFixed(2) + 'deg)';
+                card.style.setProperty('--gloss-x', state.gx.toFixed(1) + '%');
+                card.style.setProperty('--gloss-y', state.gy.toFixed(1) + '%');
+            }
+
+            card.addEventListener('mouseenter', function(){
+                state.active = true;
+            });
+
+            card.addEventListener('mousemove', function(e){
+                var rect = card.getBoundingClientRect();
+                var px = (e.clientX - rect.left) / rect.width;
+                var py = (e.clientY - rect.top) / rect.height;
+                state.ry = (px - 0.5) * 2 * MAX_RY;
+                state.rx = (0.5 - py) * 2 * MAX_RX;
+                state.gx = px * 100;
+                state.gy = py * 100;
+                if (!rafId) rafId = requestAnimationFrame(apply);
+            });
+
+            card.addEventListener('mouseleave', function(){
+                state.active = false;
+                if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+                card.style.transform = '';
+                card.style.setProperty('--gloss-x', '50%');
+                card.style.setProperty('--gloss-y', '50%');
+            });
+        });
+    })();
+    </script>
 </th:block>

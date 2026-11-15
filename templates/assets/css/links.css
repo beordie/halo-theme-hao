@@ -1,117 +1,357 @@
-/* 友链页面样式 - 极简 IT 博客风 */
+/* =====================================================================
+   友链页面样式 - 极简 IT 导航站风格
+   参考：Tech Bookmarks 导航站卡片设计
+   注意：PJAX 只替换 #body-wrap 的 innerHTML，所以用 :has(.links-page)
+        限定作用域，避免跳到其他页面后规则残留。
+   ===================================================================== */
 
-.links-page {
-    --links-card-radius: 10px;
-    --links-card-gap: 16px;
-    --links-favicon-size: 32px;
+/* ---------- 移除页面外层白色背景框 ---------- */
+#body-wrap:has(.links-page) > main.layout#content-inner {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
 }
 
-/* 标题区 */
+#body-wrap:has(.links-page) > main.layout#content-inner > div#page {
+    width: 100%;
+    flex: 1 1 auto;
+    padding: 0;
+    overflow: visible;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    animation: none;
+}
+
+/* ---------- 页面容器 + 环境背景光晕 ---------- */
+.links-page {
+    --links-card-h: 132px;
+    --links-icon-size: 46px;
+
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    padding: 8px 4px 60px;
+}
+
+/* 环境光晕：仅装饰，不遮内容 */
+.links-page::before {
+    content: "";
+    position: fixed;
+    top: -10%;
+    right: -5%;
+    width: 70vw;
+    height: 60vh;
+    background: radial-gradient(closest-side,
+        color-mix(in srgb, var(--heo-theme) 14%, transparent),
+        transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(20px);
+}
+
+.links-page > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* =====================================================================
+   Hero 标题区
+   ===================================================================== */
 .links-hero {
     margin-bottom: 32px;
+    padding-top: 8px;
 }
 
 .links-hero .banners-title-small {
-    font-size: 0.85rem;
-    color: var(--heo-fontcolor);
-    opacity: 0.6;
-    letter-spacing: 0.05em;
+    font-size: 0.78rem;
+    color: var(--heo-theme);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
 }
 
 .links-hero .banners-title-big {
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 800;
     color: var(--heo-fontcolor);
-    margin-top: 4px;
+    margin-top: 8px;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
 }
 
-/* 分组 */
-.links-group {
-    margin-bottom: 40px;
+.links-hero-sub {
+    margin: 12px 0 0;
+    font-size: 0.88rem;
+    color: var(--heo-secondtext);
+    max-width: 560px;
+    line-height: 1.7;
 }
 
-.links-group-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--heo-fontcolor);
-    margin: 0 0 4px;
+/* =====================================================================
+   分类筛选 Chips（无搜索框）
+   ===================================================================== */
+.links-toolbar {
+    margin-bottom: 36px;
+}
+
+.links-chips {
     display: flex;
-    align-items: baseline;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
-.links-group-count {
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--heo-fontcolor);
-    opacity: 0.5;
+.links-chip {
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--style-border);
+    color: var(--heo-secondtext);
+    background: var(--heo-card-bg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    line-height: 1.4;
 }
 
-.links-group-desc {
-    font-size: 0.8rem;
+.links-chip:hover {
+    border-color: var(--heo-theme);
+    color: var(--heo-theme);
+    transform: translateY(-1px);
+}
+
+.links-chip.on {
+    background: var(--heo-theme);
+    border-color: var(--heo-theme);
+    color: #fff;
+    box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--heo-theme) 50%, transparent);
+}
+
+/* =====================================================================
+   分组标题
+   ===================================================================== */
+.links-group {
+    margin-bottom: 48px;
+}
+
+.links-group-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 6px;
+}
+
+.links-group-bar {
+    width: 4px;
+    height: 20px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, var(--heo-theme), #a855f7);
+    flex-shrink: 0;
+}
+
+.links-group-title {
+    font-size: 1.15rem;
+    font-weight: 700;
     color: var(--heo-fontcolor);
-    opacity: 0.6;
-    margin: 0 0 16px;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.links-group-count {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--heo-theme);
+    background: color-mix(in srgb, var(--heo-theme) 12%, transparent);
+    padding: 2px 9px;
+    border-radius: 999px;
+    margin-left: 2px;
     line-height: 1.5;
 }
 
-/* 卡片网格 */
-.links-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: var(--links-card-gap);
+.links-group-desc {
+    font-size: 0.82rem;
+    color: var(--heo-secondtext);
+    margin: 0 0 18px 14px;
+    line-height: 1.6;
 }
 
-/* 友链卡片 */
+/* =====================================================================
+   卡片网格
+   ===================================================================== */
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    perspective: 1000px;
+}
+
+/* =====================================================================
+   卡片
+   ===================================================================== */
 .links-card {
+    position: relative;
     display: flex;
+    gap: 14px;
     align-items: flex-start;
-    gap: 12px;
-    padding: 14px 16px;
-    background: var(--heo-card-bg);
-    border: 1px solid var(--style-border);
-    border-radius: var(--links-card-radius);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    height: var(--links-card-h);
+    padding: 18px;
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--heo-card-bg) 82%, transparent);
+    border: 1px solid color-mix(in srgb, var(--heo-fontcolor) 7%, transparent);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     text-decoration: none;
-    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.3, 1),
+                box-shadow 0.25s ease,
+                border-color 0.25s ease,
+                background 0.25s ease;
+}
+
+/* 玻璃光泽层 —— 跟随光标移动 */
+.links-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: radial-gradient(
+        220px circle at var(--gloss-x, 50%) var(--gloss-y, 50%),
+        rgba(255, 255, 255, 0.22),
+        rgba(255, 255, 255, 0.05) 35%,
+        transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* hover 渐变蒙层 */
+.links-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: linear-gradient(120deg,
+        color-mix(in srgb, var(--heo-theme) 7%, transparent),
+        rgba(168, 85, 247, 0.06));
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 0;
 }
 
 .links-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--heo-theme);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    border-color: color-mix(in srgb, var(--heo-theme) 35%, transparent);
+    box-shadow: 0 14px 32px -12px color-mix(in srgb, var(--heo-theme) 32%, transparent);
     text-decoration: none;
+    background: color-mix(in srgb, var(--heo-card-bg) 95%, transparent);
 }
 
+.links-card:hover::before,
+.links-card:hover::after {
+    opacity: 1;
+}
+
+/* 内容层在蒙层之上、光泽之下 */
+.links-card-icon,
+.links-card-body,
+.links-card-tag,
+.links-card-arrow {
+    position: relative;
+    z-index: 1;
+}
+
+/* =====================================================================
+   渐变头像（替代模糊 favicon）
+   ===================================================================== */
+.links-card-icon {
+    flex: 0 0 auto;
+    width: var(--links-icon-size);
+    height: var(--links-icon-size);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25),
+                0 4px 10px -4px rgba(0, 0, 0, 0.25);
+    transform-style: preserve-3d;
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1),
+                box-shadow 0.25s ease;
+}
+
+.links-card:hover .links-card-icon {
+    transform: translateZ(34px) scale(1.06);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+                0 10px 22px -6px rgba(0, 0, 0, 0.35);
+}
+
+.links-card-letter {
+    font-size: 17px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+    user-select: none;
+    text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* 9 组渐变配色 */
+.links-card-icon.pal-0 { background: linear-gradient(135deg, #4f6bff, #7c5cff); }
+.links-card-icon.pal-1 { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
+.links-card-icon.pal-2 { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+.links-card-icon.pal-3 { background: linear-gradient(135deg, #f59e0b, #f97316); }
+.links-card-icon.pal-4 { background: linear-gradient(135deg, #ec4899, #db2777); }
+.links-card-icon.pal-5 { background: linear-gradient(135deg, #8b5cf6, #a855f7); }
+.links-card-icon.pal-6 { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.links-card-icon.pal-7 { background: linear-gradient(135deg, #ef4444, #e11d48); }
+.links-card-icon.pal-8 { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+
+/* favicon 叠加层：高清 contain，叠在渐变底板上；透明图标透出渐变 */
 .links-card-favicon {
-    width: var(--links-favicon-size);
-    height: var(--links-favicon-size);
-    min-width: var(--links-favicon-size);
-    border-radius: 8px;
-    background: var(--heo-secondbg);
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    padding: 3px;
+    padding: 5px;
     box-sizing: border-box;
+    border-radius: 12px;
 }
 
+/* =====================================================================
+   文字区
+   ===================================================================== */
 .links-card-body {
     flex: 1;
     min-width: 0;
+    padding-right: 46px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    justify-content: center;
+    min-height: var(--links-icon-size);
+    transform-style: preserve-3d;
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+.links-card:hover .links-card-body {
+    transform: translateZ(18px);
 }
 
 .links-card-name {
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 0.94rem;
+    font-weight: 700;
     color: var(--heo-fontcolor);
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
+    line-height: 1.35;
+    white-space: nowrap;
     overflow: hidden;
-    -webkit-line-clamp: 1;
-    transition: color 0.25s ease;
+    text-overflow: ellipsis;
+    display: block;
+    transition: color 0.2s ease;
 }
 
 .links-card:hover .links-card-name {
@@ -119,20 +359,108 @@
 }
 
 .links-card-desc {
-    font-size: 0.8rem;
-    color: var(--heo-fontcolor);
-    opacity: 0.6;
-    line-height: 1.45;
+    margin-top: 5px;
+    font-size: 0.78rem;
+    line-height: 1.55;
+    color: var(--heo-secondtext);
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     word-break: break-word;
 }
 
-/* 响应式 */
-@media screen and (max-width: 600px) {
+/* =====================================================================
+   分类角标 - 按类别自动配色
+   ===================================================================== */
+.links-card-tag {
+    --tag-color: var(--heo-theme);
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 0.66rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--tag-color) 12%, transparent);
+    color: var(--tag-color);
+    max-width: 84px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 常见类别默认配色（label 不指定 labelColor 时自动套用） */
+.links-card-tag.cat-ai    { --tag-color: #7c3aed; }
+.links-card-tag.cat-dev   { --tag-color: #0d9488; }
+.links-card-tag.cat-tool  { --tag-color: #d97706; }
+.links-card-tag.cat-media { --tag-color: #db2777; }
+.links-card-tag.cat-rpc   { --tag-color: #2563eb; }
+.links-card-tag.cat-img   { --tag-color: #db2777; }
+.links-card-tag.cat-blog  { --tag-color: #0891b2; }
+
+/* =====================================================================
+   hover 箭头
+   ===================================================================== */
+.links-card-arrow {
+    position: absolute;
+    right: 14px;
+    bottom: 12px;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--heo-secondtext);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.25s ease;
+}
+
+.links-card:hover .links-card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--heo-theme);
+}
+
+/* =====================================================================
+   空结果
+   ===================================================================== */
+.links-empty {
+    text-align: center;
+    color: var(--heo-secondtext);
+    font-size: 0.85rem;
+    padding: 60px 0;
+}
+
+/* =====================================================================
+   响应式
+   ===================================================================== */
+@media screen and (max-width: 640px) {
     .links-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .links-card {
+        padding: 14px;
+        height: auto;
+        min-height: 110px;
+        gap: 10px;
+    }
+    .links-card-body {
+        padding-right: 36px;
+    }
+    .links-hero .banners-title-big {
+        font-size: 1.6rem;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .links-grid {
+        grid-template-columns: 1fr;
     }
 }
